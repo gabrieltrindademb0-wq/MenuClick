@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenuClick | Digital Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        :root {
+            --primary: #FF7A00;
+            --dark: #111111;
+            --dark-soft: #1a1a1a;
+            --white: #FFFFFF;
+            --gray: #bbbbbb; /* Alterado para um cinza mais claro */
+            --light-gray: #f0f0f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--dark); color: var(--white); overflow-x: hidden; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .orange { color: var(--primary); }
+
+        /* Navbar */
+        header {
+            padding: 20px 0; position: fixed; width: 100%; top: 0; z-index: 1000;
+            background: rgba(17, 17, 17, 0.9); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: var(--white); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .logo img { height: 40px; width: auto; } /* Ajuste de tamanho da logo */
+        
+        .nav-links { display: flex; list-style: none; gap: 30px; align-items: center; }
+        .nav-links a { color: var(--white); text-decoration: none; font-size: 14px; opacity: 0.7; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; color: var(--primary); }
+
+        /* Botões */
+        .btn { padding: 16px 32px; border-radius: 12px; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s; border: none; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(255, 122, 0, 0.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255, 122, 0, 0.4); }
+
+        /* Seção Genérica */
+        .section-padding { padding: 100px 0; }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .section-title h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 15px; }
+        .section-title p { max-width: 700px; margin: 0 auto; color: var(--gray); font-size: 1.1rem; }
+
+        /* Hero - Banner Principal */
+        .hero {
+            height: 90vh; /* Ajustado para deixar a navbar visível */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(17,17,17,0.8), rgba(17,17,17,0.8)), url('https://images.unsplash.com/photo-1547658718-d4469273c52e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center center/cover no-repeat fixed;
+            color: var(--white);
+            position: relative;
+        }
+        .hero h1 { font-size: clamp(3rem, 7vw, 5rem); line-height: 1.1; margin-bottom: 25px; font-weight: 800; letter-spacing: -1px; }
+        .hero p { font-size: clamp(1rem, 2.5vw, 1.3rem); color: var(--gray); max-width: 800px; margin: 0 auto 40px; }
+
+        /* Por que nos Escolher? (NOVO) */
+        .why-choose-us { background-color: var(--dark-soft); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .feature-item { text-align: center; padding: 40px; border-radius: 15px; background-color: var(--dark); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .feature-item:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .feature-item .icon { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
+        .feature-item h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        .feature-item p { color: var(--gray); }
+
+        /* Portfólio */
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .portfolio-card {
+            position: relative; border-radius: 20px; overflow: hidden; height: 350px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .portfolio-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .portfolio-overlay {
+            position: absolute; inset: 0; background: linear-gradient(transparent, var(--dark));
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 30px;
+            opacity: 0; transition: 0.4s;
+        }
+        .portfolio-card:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-card:hover img { transform: scale(1.1); }
+        .portfolio-overlay h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .portfolio-overlay p { color: var(--gray); font-size: 0.9rem; }
+
+        /* Planos */
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .pricing-card {
+            background: var(--dark-soft); padding: 40px; border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
+            text-align: center;
+        }
+        .pricing-card.featured { border-color: var(--primary); transform: translateY(-10px); }
+        .pricing-card h3 { color: var(--primary); font-size: 1.8rem; margin-bottom: 20px; }
+        .pricing-card p.description { color: var(--gray); margin-bottom: 30px; min-height: 50px;}
+        .pricing-card ul { list-style: none; margin: 25px 0; text-align: left; }
+        .pricing-card li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; color: var(--white); }
+        .pricing-card li::before { content: '✓'; color: var(--primary); font-weight: bold; font-size: 1.1em; line-height: 1; }
+        .pricing-card .btn { width: 100%; margin-top: 30px; }
+
+        /* Nosso Processo */
+        .process-flow { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; position: relative; }
+        .process-step { width: 200px; text-align: center; position: relative; }
+        .process-step .icon { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
+        .process-step h4 { font-size: 1.3rem; margin-bottom: 10px; }
+        .process-step p { color: var(--gray); font-size: 0.9rem; }
+        .process-flow .process-step:not(:last-child)::after {
+            content: '➔'; color: var(--gray); font-size: 2rem; position: absolute;
+            right: -40px; top: 50px; transform: translateY(-50%); z-index: 1;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* FAQ */
+        .faq-item {
+            background-color: var(--dark-soft); padding: 25px; border-radius: 15px;
+            margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer;
+            transition: 0.3s;
+        }
+        .faq-item:hover { border-color: var(--primary); }
+        .faq-question { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: 600; }
+        .faq-answer { margin-top: 15px; color: var(--gray); line-height: 1.6; display: none; }
+        .faq-item.active .faq-answer { display: block; }
+
+        /* CTA Final */
+        .cta-final { text-align: center; background-color: var(--dark-soft); padding: 80px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+        .cta-final h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 20px; }
+        .cta-final p { font-size: 1.1rem; color: var(--gray); max-width: 700px; margin: 0 auto 40px; }
+
+        /* WhatsApp Flutuante */
+        .whatsapp-btn {
+            position: fixed; bottom: 30px; right: 30px; background: #25d366;
+            color: white; width: 60px; height: 60px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); z-index: 1000; transition: 0.3s;
+            text-decoration: none;
+        }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+
+        /* Footer */
+        footer { padding: 60px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: var(--gray); font-size: 0.9rem; }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links { gap: 15px; }
+            .nav-links li:not(:last-child) { display: none; } /* Oculta links em mobile para focar no CTA */
+            .hero h1 { font-size: 2.5rem; }
+            .section-title h2 { font-size: 2rem; }
+            .process-flow { flex-direction: column; align-items: center; }
+            .process-step { width: 100%; }
+            .process-flow .process-step:not(:last-child)::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="logo menuclick.png" alt="MenuClick Logo">
+                menuclick
+            </a>
+            <ul class="nav-links">
+                <li><a href="#portfolio">Portfólio</a></li>
+                <li><a href="#planos">Planos</a></li>
+                <li><a href="#processo">Processo</a></li>
+                <li><a href="#faq">Dúvidas</a></li>
+                <li><a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="btn btn-primary" style="padding: 10px 20px;">Orçamento</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container" data-aos="fade-up">
+            <h1>Seu negócio merece uma <br><span class="orange">presença digital imponente.</span></h1>
+            <p>Transformamos ideias em sites de alta performance, focados em resultados e design que encanta.</p>
+            <a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="btn btn-primary">Fale Conosco Agora</a>
+        </div>
+    </section>
+
+    <section id="why-choose-us" class="section-padding why-choose-us">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Por que a <span class="orange">MenuClick</span>?</h2>
+                <p>Mais do que criar sites, geramos valor para sua marca com estratégia, design e tecnologia de ponta.</p>
+            </div>
+            <div class="grid">
+                <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon">✨</div>
+                    <h3>Design Exclusivo</h3>
+                    <p>Sua marca com identidade única e memorável, sem templates genéricos.</p>
+                </div>
+                <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="icon">🚀</div>
+                    <h3>Alta Performance</h3>
+                    <p>Sites ultra-rápidos e otimizados para o Google, garantindo a melhor experiência.</p>
+                </div>
+                <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="icon">📈</div>
+                    <h3>Foco em Conversão</h3>
+                    <p>Páginas pensadas para transformar visitantes em clientes reais e qualificados.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="section-padding container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Projetos em <span class="orange">Destaque</span></h2>
+            <p>Conheça um pouco do nosso trabalho e veja como podemos transformar sua presença online.</p>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-card" data-aos="fade-up">
+                <img src="https://images.unsplash.com/photo-1517292987719-0369a794ec0f?q=80&w=500" alt="Landing Page SaaS">
+                <div class="portfolio-overlay">
+                    <h3>Landing Page SaaS</h3>
+                    <p>Foco total em conversão de leads.</p>
+                </div>
+            </div>
+            <div class="portfolio-card" data-aos="fade-up" data-aos-delay="100">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=500" alt="Portal Institucional">
+                <div class="portfolio-overlay">
+                    <h3>Portal Institucional</h3>
+                    <p>Autoridade e design limpo.</p>
+                </div>
+            </div>
+            <div class="portfolio-card" data-aos="fade-up" data-aos-delay="200">
+                <img src="https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=500" alt="E-commerce VIP">
+                <div class="portfolio-overlay">
+                    <h3>E-commerce VIP</h3>
+                    <p>Experiência de compra fluida.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="planos" class="section-padding container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Nossas <span class="orange">Soluções</span> Digitais</h2>
+            <p>Encontre o plano ideal para sua empresa decolar no ambiente online.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card" data-aos="fade-up">
+                <h3>Landing Page</h3>
+                <p class="description">Ideal para campanhas de marketing pontuais.</p>
+                <ul>
+                    <li>Página Única de Vendas</li>
+                    <li>Design Responsivo</li>
+                    <li>Integração com Formulário</li>
+                    <li>SEO Básico</li>
+                </ul>
+                <a href="https://wa.me/SEUNUMERO?text=Olá,%20tenho%20interesse%20na%20Landing%20Page." class="btn btn-primary">Quero Este!</a>
+            </div>
+            <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="100">
+                <h3>Site Institucional</h3>
+                <p class="description">Apresente sua empresa com profissionalismo.</p>
+                <ul>
+                    <li>Até 5 Páginas Personalizadas</li>
+                    <li>Galeria de Fotos/Serviços</li>
+                    <li>Blog Integrado (Opcional)</li>
+                    <li>Otimização SEO Avançada</li>
+                </ul>
+                <a href="https://wa.me/SEUNUMERO?text=Olá,%20tenho%20interesse%20no%20Site%20Institucional." class="btn btn-primary">Mais Popular</a>
+            </div>
+            <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+                <h3>E-commerce</h3>
+                <p class="description">Sua loja virtual completa, pronta para vender.</p>
+                <ul>
+                    <li>Catálogo de Produtos Ilimitado</li>
+                    <li>Gestão de Pedidos e Estoque</li>
+                    <li>Integração com Pagamentos</li>
+                    <li>Suporte Pós-Lançamento</li>
+                </ul>
+                <a href="https://wa.me/SEUNUMERO?text=Olá,%20tenho%20interesse%20no%20E-commerce." class="btn btn-primary">Consultar</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="processo" class="section-padding container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Nosso <span class="orange">Processo</span> de Criação</h2>
+            <p>Transparência e eficiência em cada etapa, do briefing à entrega do seu site.</p>
+        </div>
+        <div class="process-flow">
+            <div class="process-step" data-aos="fade-up" data-aos-delay="100">
+                <div class="icon">💡</div>
+                <h4>1. Ideia & Briefing</h4>
+                <p>Coletamos suas necessidades e objetivos.</p>
+            </div>
+            <div class="process-step" data-aos="fade-up" data-aos-delay="200">
+                <div class="icon">🎨</div>
+                <h4>2. Design & Estratégia</h4>
+                <p>Criamos layouts focados em experiência e conversão.</p>
+            </div>
+            <div class="process-step" data-aos="fade-up" data-aos-delay="300">
+                <div class="icon">💻</div>
+                <h4>3. Desenvolvimento</h4>
+                <p>Transformamos o design em código limpo e otimizado.</p>
+            </div>
+            <div class="process-step" data-aos="fade-up" data-aos-delay="400">
+                <div class="icon">🚀</div>
+                <h4>4. Lançamento & Suporte</h4>
+                <p>Seu site no ar com acompanhamento e otimizações.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="section-padding container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Perguntas <span class="orange">Frequentes</span></h2>
+            <p>Esclareça suas principais dúvidas sobre a criação de sites e nossos serviços.</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="faq-question">
+                    <span>Quanto tempo leva para meu site ficar pronto?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>O prazo varia de acordo com a complexidade do projeto. Landing Pages levam entre 7-10 dias úteis, enquanto sites institucionais e e-commerces podem levar de 20 a 45 dias úteis.</p>
+                </div>
+            </div>
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="faq-question">
+                    <span>O site será responsivo para celular e tablet?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Sim, todos os nossos sites são desenvolvidos com tecnologia responsiva, garantindo que se adaptem perfeitamente a qualquer tamanho de tela.</p>
+                </div>
+            </div>
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="faq-question">
+                    <span>Vocês oferecem suporte após a entrega do site?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Sim, oferecemos suporte técnico inicial e planos de manutenção caso precise de atualizações e suporte contínuo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-final section-padding">
+        <div class="container" data-aos="zoom-in">
+            <h2>Pronto para levar seu negócio ao <span class="orange">próximo nível?</span></h2>
+            <p>Entre em contato agora mesmo e descubra como um site profissional pode transformar sua presença digital.</p>
+            <a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="btn btn-primary">Fale com um Especialista</a>
+        </div>
+    </section>
+
+    <a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="whatsapp-btn" target="_blank">📞</a>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MenuClick Digital Experience. Todos os direitos reservados.</p>
+            <p style="margin-top: 10px;">Transformando ideias em resultados digitais.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('active');
+                const answer = item.querySelector('.faq-answer');
+                const toggle = item.querySelector('.faq-toggle');
+                if (item.classList.contains('active')) {
+                    answer.style.display = 'block';
+                    toggle.textContent = '-';
+                } else {
+                    answer.style.display = 'none';
+                    toggle.textContent = '+';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
