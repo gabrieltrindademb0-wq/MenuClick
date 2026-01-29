@@ -12,7 +12,7 @@
             --dark: #111111;
             --dark-soft: #1a1a1a;
             --white: #FFFFFF;
-            --gray: #bbbbbb; /* Alterado para um cinza mais claro */
+            --gray: #bbbbbb;
             --light-gray: #f0f0f0;
         }
 
@@ -38,7 +38,7 @@
             align-items: center; 
             gap: 10px; 
         }
-        .logo img { height: 40px; width: auto; } /* Ajuste de tamanho da logo */
+        .logo img { height: 40px; width: auto; }
         
         .nav-links { display: flex; list-style: none; gap: 30px; align-items: center; }
         .nav-links a { color: var(--white); text-decoration: none; font-size: 14px; opacity: 0.7; transition: 0.3s; }
@@ -55,9 +55,9 @@
         .section-title h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 15px; }
         .section-title p { max-width: 700px; margin: 0 auto; color: var(--gray); font-size: 1.1rem; }
 
-        /* Hero - Banner Principal */
+        /* Hero */
         .hero {
-            height: 90vh; /* Ajustado para deixar a navbar visível */
+            height: 90vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -69,7 +69,7 @@
         .hero h1 { font-size: clamp(3rem, 7vw, 5rem); line-height: 1.1; margin-bottom: 25px; font-weight: 800; letter-spacing: -1px; }
         .hero p { font-size: clamp(1rem, 2.5vw, 1.3rem); color: var(--gray); max-width: 800px; margin: 0 auto 40px; }
 
-        /* Por que nos Escolher? (NOVO) */
+        /* Diferenciais */
         .why-choose-us { background-color: var(--dark-soft); }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
         .feature-item { text-align: center; padding: 40px; border-radius: 15px; background-color: var(--dark); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
@@ -95,22 +95,47 @@
         .portfolio-overlay h3 { font-size: 1.5rem; margin-bottom: 10px; }
         .portfolio-overlay p { color: var(--gray); font-size: 0.9rem; }
 
-        /* Planos */
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .pricing-card {
-            background: var(--dark-soft); padding: 40px; border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
+        /* Resultados e Testemunhos */
+        .results-love { background-color: var(--dark-soft); overflow: hidden; }
+        .metrics-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 30px; 
+            margin-top: 50px;
+            margin-bottom: 80px;
+        }
+        .metric-card {
+            background-color: var(--dark);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .metric-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .metric-card h3 { font-size: clamp(2.5rem, 5vw, 4rem); color: var(--primary); font-weight: 800; margin-bottom: 10px; line-height: 1; }
+        .metric-card p { font-size: 1.1rem; color: var(--white); opacity: 0.8; }
+
+        /* Carrossel de Testemunhos - ATUALIZADO PARA 2 POR VEZ */
+        .testimonial-slider { position: relative; max-width: 1100px; margin: 0 auto; overflow: hidden; }
+        .testimonial-track { display: flex; transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .testimonial-card {
+            min-width: calc(50% - 20px); /* Exibe 2 por vez */
+            background-color: var(--dark);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             text-align: center;
         }
-        .pricing-card.featured { border-color: var(--primary); transform: translateY(-10px); }
-        .pricing-card h3 { color: var(--primary); font-size: 1.8rem; margin-bottom: 20px; }
-        .pricing-card p.description { color: var(--gray); margin-bottom: 30px; min-height: 50px;}
-        .pricing-card ul { list-style: none; margin: 25px 0; text-align: left; }
-        .pricing-card li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; color: var(--white); }
-        .pricing-card li::before { content: '✓'; color: var(--primary); font-weight: bold; font-size: 1.1em; line-height: 1; }
-        .pricing-card .btn { width: 100%; margin-top: 30px; }
+        .testimonial-card .quote { font-size: 1.2rem; color: var(--gray); line-height: 1.6; margin-bottom: 25px; font-style: italic; }
+        .testimonial-card .author { font-weight: 700; color: var(--white); font-size: 1.1rem; }
+        .testimonial-card .company { font-size: 0.9rem; color: var(--primary); margin-top: 5px; }
 
-        /* Nosso Processo */
+        /* Processo */
         .process-flow { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; position: relative; }
         .process-step { width: 200px; text-align: center; position: relative; }
         .process-step .icon { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
@@ -138,28 +163,39 @@
         .cta-final h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 20px; }
         .cta-final p { font-size: 1.1rem; color: var(--gray); max-width: 700px; margin: 0 auto 40px; }
 
-        /* WhatsApp Flutuante */
-        .whatsapp-btn {
-            position: fixed; bottom: 30px; right: 30px; background: #25d366;
-            color: white; width: 60px; height: 60px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3); z-index: 1000; transition: 0.3s;
-            text-decoration: none;
-        }
-        .whatsapp-btn:hover { transform: scale(1.1); }
-
         /* Footer */
-        footer { padding: 60px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: var(--gray); font-size: 0.9rem; }
+        .main-footer { background-color: var(--dark); padding: 80px 0 40px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; }
+        .footer-col h4 { color: var(--white); margin-bottom: 25px; font-size: 1.2rem; font-weight: 700; }
+        .footer-links { list-style: none; line-height: 2.5; }
+        .footer-links a { color: var(--gray); text-decoration: none; transition: 0.3s; }
+        .footer-links a:hover { color: var(--primary); padding-left: 5px; }
+        .social-link { display: inline-flex; align-items: center; gap: 10px; color: var(--primary); text-decoration: none; font-weight: 700; margin-top: 15px; transition: 0.3s; }
+        .social-link:hover { opacity: 0.8; transform: translateX(5px); }
 
-        /* Responsividade */
+        .tech-stack { margin-bottom: 60px; text-align: center; overflow: hidden; }
+        .tech-title { color: var(--gray); font-size: 0.8rem; letter-spacing: 2px; font-weight: 800; margin-bottom: 30px; opacity: 0.6; }
+        .tech-slider { display: flex; overflow: hidden; position: relative; width: 100%; }
+        .tech-track { display: flex; gap: 60px; animation: scroll 20s linear infinite; width: max-content; }
+        .tech-track span { font-weight: 700; color: var(--gray); opacity: 0.5; white-space: nowrap; font-size: 1.1rem; }
+        
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
         @media (max-width: 768px) {
-            .nav-links { gap: 15px; }
-            .nav-links li:not(:last-child) { display: none; } /* Oculta links em mobile para focar no CTA */
+            .nav-links li:not(:last-child) { display: none; }
             .hero h1 { font-size: 2.5rem; }
             .section-title h2 { font-size: 2rem; }
             .process-flow { flex-direction: column; align-items: center; }
             .process-step { width: 100%; }
             .process-flow .process-step:not(:last-child)::after { display: none; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .footer-grid { text-align: center; }
+            .social-link { justify-content: center; }
+            /* Ajuste para 1 por vez no celular */
+            .testimonial-card { min-width: 100%; margin: 0; }
         }
     </style>
 </head>
@@ -173,10 +209,10 @@
             </a>
             <ul class="nav-links">
                 <li><a href="#portfolio">Portfólio</a></li>
-                <li><a href="#planos">Planos</a></li>
+                <li><a href="#results-love">Resultados</a></li> 
                 <li><a href="#processo">Processo</a></li>
                 <li><a href="#faq">Dúvidas</a></li>
-                <li><a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="btn btn-primary" style="padding: 10px 20px;">Orçamento</a></li>
+                <li><a href="https://wa.me/5535997814774?text=Olá!%20Vi%20o%20site%20da%20MenuClick%20e%20gostaria%20de%20solicitar%20um%20orçamento%20personalizado%20para%20o%20meu%20projeto." class="btn btn-primary" style="padding: 10px 20px;">Orçamento</a></li>
             </ul>
         </nav>
     </header>
@@ -185,7 +221,7 @@
         <div class="container" data-aos="fade-up">
             <h1>Seu negócio merece uma <br><span class="orange">presença digital imponente.</span></h1>
             <p>Transformamos ideias em sites de alta performance, focados em resultados e design que encanta.</p>
-            <a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="btn btn-primary">Fale Conosco Agora</a>
+            <a href="https://wa.me/5535997814774?text=Olá!%20Quero%20transformar%20minha%20presença%20digital%20com%20a%20MenuClick." class="btn btn-primary">Fale Conosco Agora</a>
         </div>
     </section>
 
@@ -222,21 +258,21 @@
         </div>
         <div class="portfolio-grid">
             <div class="portfolio-card" data-aos="fade-up">
-                <img src="https://images.unsplash.com/photo-1517292987719-0369a794ec0f?q=80&w=500" alt="Landing Page SaaS">
+                <img src="https://images.unsplash.com/photo-1517292987719-0369a794ec0f?q=80&w=500" alt="Landing Page">
                 <div class="portfolio-overlay">
                     <h3>Landing Page SaaS</h3>
                     <p>Foco total em conversão de leads.</p>
                 </div>
             </div>
             <div class="portfolio-card" data-aos="fade-up" data-aos-delay="100">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=500" alt="Portal Institucional">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=500" alt="Portal">
                 <div class="portfolio-overlay">
                     <h3>Portal Institucional</h3>
                     <p>Autoridade e design limpo.</p>
                 </div>
             </div>
             <div class="portfolio-card" data-aos="fade-up" data-aos-delay="200">
-                <img src="https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=500" alt="E-commerce VIP">
+                <img src="https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=500" alt="E-commerce">
                 <div class="portfolio-overlay">
                     <h3>E-commerce VIP</h3>
                     <p>Experiência de compra fluida.</p>
@@ -245,44 +281,51 @@
         </div>
     </section>
 
-    <section id="planos" class="section-padding container">
-        <div class="section-title" data-aos="fade-up">
-            <h2>Nossas <span class="orange">Soluções</span> Digitais</h2>
-            <p>Encontre o plano ideal para sua empresa decolar no ambiente online.</p>
-        </div>
-        <div class="pricing-grid">
-            <div class="pricing-card" data-aos="fade-up">
-                <h3>Landing Page</h3>
-                <p class="description">Ideal para campanhas de marketing pontuais.</p>
-                <ul>
-                    <li>Página Única de Vendas</li>
-                    <li>Design Responsivo</li>
-                    <li>Integração com Formulário</li>
-                    <li>SEO Básico</li>
-                </ul>
-                <a href="https://wa.me/SEUNUMERO?text=Olá,%20tenho%20interesse%20na%20Landing%20Page." class="btn btn-primary">Quero Este!</a>
+    <section id="results-love" class="section-padding results-love">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Resultados que Nossos Clientes <span class="orange">Amam</span></h2>
+                <p>Nossa paixão é transformar a presença digital em crescimento real para o seu negócio.</p>
             </div>
-            <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="100">
-                <h3>Site Institucional</h3>
-                <p class="description">Apresente sua empresa com profissionalismo.</p>
-                <ul>
-                    <li>Até 5 Páginas Personalizadas</li>
-                    <li>Galeria de Fotos/Serviços</li>
-                    <li>Blog Integrado (Opcional)</li>
-                    <li>Otimização SEO Avançada</li>
-                </ul>
-                <a href="https://wa.me/SEUNUMERO?text=Olá,%20tenho%20interesse%20no%20Site%20Institucional." class="btn btn-primary">Mais Popular</a>
+            
+            <div class="metrics-grid">
+                <div class="metric-card" data-aos="fade-up">
+                    <h3>+300%</h3>
+                    <p>Aumento de Tráfego Orgânico</p>
+                </div>
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="100">
+                    <h3>98%</h3>
+                    <p>Satisfação dos Clientes</p>
+                </div>
+                <div class="metric-card" data-aos="fade-up" data-aos-delay="200">
+                    <h3>+500</h3>
+                    <p>Projetos Entregues</p>
+                </div>
             </div>
-            <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
-                <h3>E-commerce</h3>
-                <p class="description">Sua loja virtual completa, pronta para vender.</p>
-                <ul>
-                    <li>Catálogo de Produtos Ilimitado</li>
-                    <li>Gestão de Pedidos e Estoque</li>
-                    <li>Integração com Pagamentos</li>
-                    <li>Suporte Pós-Lançamento</li>
-                </ul>
-                <a href="https://wa.me/SEUNUMERO?text=Olá,%20tenho%20interesse%20no%20E-commerce." class="btn btn-primary">Consultar</a>
+
+            <div class="testimonial-slider" data-aos="fade-up">
+                <div class="testimonial-track" id="testimonialTrack">
+                    <div class="testimonial-card">
+                        <p class="quote">"A MenuClick superou nossas expectativas! O site ficou lindo, rápido e gerou um aumento significativo nas nossas vendas."</p>
+                        <p class="author">Ana Paula Costa</p>
+                        <p class="company">CEO, Doceria Delícias da Vovó</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="quote">"Profissionais de ponta! Entregaram um portal institucional que nos trouxe mais credibilidade no mercado nacional."</p>
+                        <p class="author">Ricardo Silva</p>
+                        <p class="company">Diretor de Marketing, Consultoria Crescer+</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="quote">"O suporte pós-venda deles é o diferencial. Estão sempre prontos para ajudar e sugerir melhorias constantes."</p>
+                        <p class="author">Mariana Lira</p>
+                        <p class="company">Fundadora, Fashion Trend</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="quote">"Conseguiram captar a essência da nossa marca e traduzir em um layout moderno e muito intuitivo. Recomendo!"</p>
+                        <p class="author">Carlos Eduardo</p>
+                        <p class="company">Proprietário, TechHub Soluções</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -290,82 +333,131 @@
     <section id="processo" class="section-padding container">
         <div class="section-title" data-aos="fade-up">
             <h2>Nosso <span class="orange">Processo</span> de Criação</h2>
-            <p>Transparência e eficiência em cada etapa, do briefing à entrega do seu site.</p>
+            <p>Transparência e eficiência em cada etapa, do briefing à entrega.</p>
         </div>
         <div class="process-flow">
-            <div class="process-step" data-aos="fade-up" data-aos-delay="100">
+            <div class="process-step" data-aos="fade-up">
                 <div class="icon">💡</div>
-                <h4>1. Ideia & Briefing</h4>
-                <p>Coletamos suas necessidades e objetivos.</p>
+                <h4>1. Ideia</h4>
+                <p>Coletamos suas necessidades.</p>
+            </div>
+            <div class="process-step" data-aos="fade-up" data-aos-delay="100">
+                <div class="icon">🎨</div>
+                <h4>2. Design</h4>
+                <p>Criamos layouts focados em conversão.</p>
             </div>
             <div class="process-step" data-aos="fade-up" data-aos-delay="200">
-                <div class="icon">🎨</div>
-                <h4>2. Design & Estratégia</h4>
-                <p>Criamos layouts focados em experiência e conversão.</p>
-            </div>
-            <div class="process-step" data-aos="fade-up" data-aos-delay="300">
                 <div class="icon">💻</div>
                 <h4>3. Desenvolvimento</h4>
-                <p>Transformamos o design em código limpo e otimizado.</p>
+                <p>Transformamos em código limpo.</p>
             </div>
-            <div class="process-step" data-aos="fade-up" data-aos-delay="400">
+            <div class="process-step" data-aos="fade-up" data-aos-delay="300">
                 <div class="icon">🚀</div>
-                <h4>4. Lançamento & Suporte</h4>
-                <p>Seu site no ar com acompanhamento e otimizações.</p>
+                <h4>4. Entrega</h4>
+                <p>Seu site no ar com suporte.</p>
             </div>
         </div>
     </section>
 
-    <section id="faq" class="section-padding container">
-        <div class="section-title" data-aos="fade-up">
-            <h2>Perguntas <span class="orange">Frequentes</span></h2>
-            <p>Esclareça suas principais dúvidas sobre a criação de sites e nossos serviços.</p>
+<section id="faq" class="section-padding container">
+    <div class="section-title" data-aos="fade-up">
+        <h2>Perguntas <span class="orange">Frequentes</span></h2>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item" data-aos="fade-up">
+            <div class="faq-question"><span>Quanto tempo leva para o meu site ficar pronto?</span><span class="faq-toggle">+</span></div>
+            <div class="faq-answer"><p>O prazo varia de 7 a 15 dias úteis. Projetos mais simples como Landing Pages são entregues mais rápido, enquanto portais e e-commerces exigem mais tempo de desenvolvimento.</p></div>
         </div>
-        <div class="faq-list">
-            <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
-                <div class="faq-question">
-                    <span>Quanto tempo leva para meu site ficar pronto?</span>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>O prazo varia de acordo com a complexidade do projeto. Landing Pages levam entre 7-10 dias úteis, enquanto sites institucionais e e-commerces podem levar de 20 a 45 dias úteis.</p>
-                </div>
-            </div>
-            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
-                <div class="faq-question">
-                    <span>O site será responsivo para celular e tablet?</span>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Sim, todos os nossos sites são desenvolvidos com tecnologia responsiva, garantindo que se adaptem perfeitamente a qualquer tamanho de tela.</p>
-                </div>
-            </div>
-            <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
-                <div class="faq-question">
-                    <span>Vocês oferecem suporte após a entrega do site?</span>
-                    <span class="faq-toggle">+</span>
-                </div>
-                <div class="faq-answer">
-                    <p>Sim, oferecemos suporte técnico inicial e planos de manutenção caso precise de atualizações e suporte contínuo.</p>
-                </div>
-            </div>
+
+        <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+            <div class="faq-question"><span>O site funciona em celulares e tablets?</span><span class="faq-toggle">+</span></div>
+            <div class="faq-answer"><p>Sim! Todos os nossos projetos são 100% responsivos, o que significa que se adaptam perfeitamente a qualquer tamanho de tela, garantindo uma excelente experiência ao utilizador.</p></div>
         </div>
-    </section>
+
+        <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+            <div class="faq-question"><span>Terei autonomia para editar o conteúdo do site?</span><span class="faq-toggle">+</span></div>
+            <div class="faq-answer"><p>Com certeza. Utilizamos plataformas intuitivas como o WordPress, que permitem que altere textos e imagens de forma simples, sem depender de um programador para mudanças básicas.</p></div>
+        </div>
+
+        <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+            <div class="faq-question"><span>O meu site aparecerá nas pesquisas do Google?</span><span class="faq-toggle">+</span></div>
+            <div class="faq-answer"><p>Sim. Aplicamos técnicas fundamentais de SEO (otimização para motores de busca) em todos os sites para ajudar o seu negócio a ser encontrado pelos clientes certos.</p></div>
+        </div>
+
+        <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
+            <div class="faq-question"><span>Oferecem suporte após o lançamento?</span><span class="faq-toggle">+</span></div>
+            <div class="faq-answer"><p>Sim, oferecemos um período de acompanhamento após a entrega para garantir que tudo funciona perfeitamente e para tirar qualquer dúvida sobre a utilização do painel.</p></div>
+        </div>
+    </div>
+</section>
 
     <section class="cta-final section-padding">
         <div class="container" data-aos="zoom-in">
-            <h2>Pronto para levar seu negócio ao <span class="orange">próximo nível?</span></h2>
-            <p>Entre em contato agora mesmo e descubra como um site profissional pode transformar sua presença digital.</p>
-            <a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="btn btn-primary">Fale com um Especialista</a>
+            <h2>Pronto para o <span class="orange">próximo nível?</span></h2>
+            <p>Descubra como um site profissional pode transformar sua presença digital.</p>
+            <a href="https://wa.me/5535997814774?text=Olá!%20Gostaria%20de%20uma%20consultoria%20gratuita%20com%20um%20especialista." class="btn btn-primary">Fale com um Especialista</a>
         </div>
     </section>
 
-    <a href="https://wa.me/SEUNUMERO?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20site." class="whatsapp-btn" target="_blank">📞</a>
-
-    <footer>
+    <footer class="main-footer">
         <div class="container">
-            <p>&copy; 2024 MenuClick Digital Experience. Todos os direitos reservados.</p>
-            <p style="margin-top: 10px;">Transformando ideias em resultados digitais.</p>
+            <div class="tech-stack" data-aos="fade-up">
+                <p class="tech-title">TECNOLOGIAS QUE UTILIZAMOS</p>
+                <div class="tech-slider">
+                    <div class="tech-track">
+                        <span>WORDPRESS</span>
+                        <span>HTML5</span>
+                        <span>ELEMENTOR PRO</span>
+                        <span>JAVASCRIPT</span>
+                        <span>GOOGLE SEO</span>
+                        <span>AWS CLOUD</span>
+                        <span>WORDPRESS</span>
+                        <span>HTML5</span>
+                        <span>ELEMENTOR PRO</span>
+                        <span>JAVASCRIPT</span>
+                        <span>GOOGLE SEO</span>
+                        <span>AWS CLOUD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-grid">
+                <div class="footer-col" data-aos="fade-up">
+                    <a href="#" class="logo" style="margin-bottom: 20px;">
+                        <img src="logo menuclick.png" alt="MenuClick Logo">
+                        menuclick
+                    </a>
+                    <p style="color: var(--gray); line-height: 1.6; margin-top: 15px;">
+                        Especialistas em criar experiências digitais que convertem visitantes em clientes fiéis.
+                    </p>
+                    <a href="https://www.instagram.com/menuclik?igsh=MXVwemlpc3cxNHI2Mg==" target="_blank" class="social-link">
+                        Siga-nos no Instagram <span>→</span>
+                    </a>
+                </div>
+
+                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
+                    <h4>Navegação</h4>
+                    <ul class="footer-links">
+                        <li><a href="#portfolio">Projetos em Destaque</a></li>
+                        <li><a href="#processo">Como trabalhamos</a></li>
+                        <li><a href="#faq">Dúvidas Comuns</a></li>
+                        <li><a href="https://wa.me/5535997814774">Solicitar Orçamento</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col" data-aos="fade-up" data-aos-delay="200">
+                    <h4>Fale Conosco</h4>
+                    <p style="color: var(--gray); margin-bottom: 10px;">contato@menuclick.com.br</p>
+                    <p style="color: var(--gray); margin-bottom: 25px;">+55 35 99781-4774</p>
+                    <p style="font-size: 0.8rem; color: var(--primary); font-weight: 700; letter-spacing: 1px;">DISPONÍVEL PARA TODO O BRASIL</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center;">
+                <p style="color: var(--gray); font-size: 0.85rem;">
+                    &copy; 2024 MenuClick Digital Experience. Todos os direitos reservados.
+                </p>
+            </div>
         </div>
     </footer>
 
@@ -373,20 +465,39 @@
     <script>
         AOS.init({ duration: 1000, once: true });
 
+        // Script FAQ
         document.querySelectorAll('.faq-item').forEach(item => {
             item.addEventListener('click', () => {
                 item.classList.toggle('active');
                 const answer = item.querySelector('.faq-answer');
                 const toggle = item.querySelector('.faq-toggle');
-                if (item.classList.contains('active')) {
-                    answer.style.display = 'block';
-                    toggle.textContent = '-';
-                } else {
-                    answer.style.display = 'none';
-                    toggle.textContent = '+';
+                if (answer) {
+                    answer.style.display = item.classList.contains('active') ? 'block' : 'none';
+                }
+                if (toggle) {
+                    toggle.textContent = item.classList.contains('active') ? '-' : '+';
                 }
             });
         });
+
+        // Script Carrossel de Testemunhos - ATUALIZADO (2 por vez e 8 segundos)
+        let currentSlide = 0;
+        const track = document.getElementById('testimonialTrack');
+        const slides = document.querySelectorAll('.testimonial-card');
+        
+        function moveSlide() {
+            const isMobile = window.innerWidth <= 768;
+            const step = isMobile ? 1 : 2;
+            const totalSteps = isMobile ? slides.length : Math.ceil(slides.length / 2);
+
+            currentSlide = (currentSlide + 1) % totalSteps;
+            
+            // Move 100% por vez no desktop (que equivale a 2 cards)
+            const percentage = currentSlide * 100;
+            track.style.transform = `translateX(-${percentage}%)`;
+        }
+
+        setInterval(moveSlide, 8000); // Troca a cada 8 segundos
     </script>
 </body>
 </html>
