@@ -1,76 +1,590 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!doctype html>
+<html lang="pt-br" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MenuClick | A plataforma da sua cidade</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MenuClick — Delivery & Catálogo digital na sua cidade</title>
+  <meta name="description" content="MenuClick conecta clientes e estabelecimentos com uma experiência moderna. Peça por WhatsApp e cresça sua loja com um painel simples."/>
+  <meta name="theme-color" content="#0b0f14"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --bg2:#0a0d12;
+      --card:#111827cc;
+      --card2:#0f172acc;
+      --text:#eaf2ff;
+      --muted:#a7b3c7;
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --accent:#ff6a1a;
+      --accent2:#ff8b2c;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --radius:18px;
+      --radius2:28px;
+      --max: 1160px;
+    }
+    html[data-theme="light"]{
+      --bg:#f7f9ff;
+      --bg2:#eef2ff;
+      --card: rgba(255,255,255,.85);
+      --card2: rgba(255,255,255,.92);
+      --text:#0b1220;
+      --muted:#46556d;
+      --border: rgba(11,18,32,.10);
+      --shadow: 0 22px 70px rgba(10,15,20,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1100px 700px at 20% 10%, rgba(255,106,26,.28), transparent 60%),
+                  radial-gradient(900px 600px at 85% 25%, rgba(76,130,255,.18), transparent 60%),
+                  linear-gradient(180deg, var(--bg), var(--bg2));
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    .container{width:100%;max-width:var(--max);margin:0 auto;padding:0 20px}
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(10,14,20,.72), rgba(10,14,20,.35));
+      border-bottom: 1px solid var(--border);
+    }
+    html[data-theme="light"] .topbar{
+      background: linear-gradient(180deg, rgba(247,249,255,.82), rgba(247,249,255,.55));
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:200px}
+    .brand img{width:38px;height:38px;border-radius:12px;box-shadow:0 10px 30px rgba(255,106,26,.25)}
+    .brand strong{font-weight:800;letter-spacing:.2px}
+    .links{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
+    .links a{font-weight:600;color:var(--muted)}
+    .links a:hover{color:var(--text)}
+    .actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;min-width:240px}
+    .btn{
+      border:1px solid var(--border);
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+      display:inline-flex; align-items:center; gap:10px;
+      user-select:none;
+      background: rgba(255,255,255,.04);
+    }
+    html[data-theme="light"] .btn{background: rgba(255,255,255,.70)}
+    .btn:hover{transform: translateY(-1px); box-shadow: 0 14px 40px rgba(0,0,0,.22); border-color: rgba(255,106,26,.30)}
+    .btn.primary{background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: rgba(255,106,26,.55); color:#111}
+    .btn.ghost{background: transparent}
+    .iconbtn{
+      width:42px;height:42px; border-radius:999px;
+      display:grid;place-items:center;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .iconbtn:hover{transform: translateY(-1px); box-shadow: 0 14px 40px rgba(0,0,0,.20)}
+    .hero{padding:70px 0 30px}
+    .heroGrid{display:grid;grid-template-columns: 1.15fr .85fr;gap:24px;align-items:stretch}
+    @media (max-width: 920px){ .heroGrid{grid-template-columns:1fr;} .actions{min-width:auto} .brand{min-width:auto} }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+    }
+    html[data-theme="light"] .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.82));
+    }
+    .heroCopy{padding:34px}
+    .chip{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      font-weight:800; color:var(--muted);
+    }
+    .hero h1{margin:16px 0 10px; font-size:44px; line-height:1.05; letter-spacing:-.02em}
+    .hero p{margin:0 0 18px; color:var(--muted); font-size:16px; line-height:1.6}
+    .ctaRow{display:flex; gap:12px; flex-wrap:wrap; margin:18px 0 22px}
+    .subRow{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; margin-top:18px}
+    @media (max-width:720px){ .hero h1{font-size:34px} .subRow{grid-template-columns:1fr;} }
+    .mini{
+      display:flex; gap:12px; align-items:flex-start;
+      padding:14px; border-radius:16px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+    html[data-theme="light"] .mini{background: rgba(255,255,255,.55)}
+    .mini b{display:block}
+    .mini span{color:var(--muted); font-size:13px; line-height:1.45}
+    .bubble{width:40px;height:40px;border-radius:14px; display:grid; place-items:center;
+      background: rgba(255,106,26,.16); border:1px solid rgba(255,106,26,.35)}
+    .heroVisual{position:relative; padding:18px}
+    .phone{
+      height: 100%;
+      min-height: 420px;
+      border-radius: 26px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(900px 500px at 50% 0%, rgba(255,106,26,.28), transparent 60%),
+        radial-gradient(700px 420px at 70% 30%, rgba(76,130,255,.22), transparent 60%),
+        linear-gradient(180deg, rgba(17,24,39,.65), rgba(17,24,39,.28));
+      position:relative;
+    }
+    html[data-theme="light"] .phone{
+      background:
+        radial-gradient(900px 500px at 50% 0%, rgba(255,106,26,.22), transparent 60%),
+        radial-gradient(700px 420px at 70% 30%, rgba(76,130,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+    }
+    .phoneTop{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px}
+    .pill{padding:8px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-weight:800;font-size:12px;color:var(--muted)}
+    .slides{padding:8px 14px 14px}
+    .slide{
+      border-radius: 20px;
+      border:1px solid var(--border);
+      overflow:hidden;
+      height: 220px;
+      position:relative;
+      background: linear-gradient(135deg, rgba(255,106,26,.22), rgba(76,130,255,.18));
+    }
+    .slide::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(220px 220px at 20% 50%, rgba(255,106,26,.55), transparent 60%),
+        radial-gradient(260px 260px at 85% 45%, rgba(0,0,0,.55), transparent 70%),
+        linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));
+      opacity:.9;
+    }
+    html[data-theme="light"] .slide::before{
+      background:
+        radial-gradient(220px 220px at 20% 50%, rgba(255,106,26,.35), transparent 60%),
+        radial-gradient(260px 260px at 85% 45%, rgba(0,0,0,.18), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.20));
+      opacity:1;
+    }
+    .slideInner{position:absolute; inset:0; padding:18px; display:flex; flex-direction:column; justify-content:flex-end; gap:6px}
+    .badge{display:inline-flex; align-items:center; gap:8px; width:max-content;
+      padding:6px 10px; border-radius:999px; font-weight:900; font-size:12px;
+      border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06)}
+    .stitle{font-size:22px; font-weight:900; letter-spacing:-.01em}
+    .ssub{color:var(--muted); font-weight:600; font-size:13px}
+    .dots{display:flex; gap:8px; justify-content:center; padding:10px 0 0}
+    .dot{width:8px;height:8px;border-radius:999px;border:1px solid var(--border);opacity:.7}
+    .dot.active{background:var(--accent);border-color:rgba(255,106,26,.55);opacity:1}
+    .catGrid{display:grid;grid-template-columns: repeat(3, minmax(0,1fr));gap:10px; padding:14px}
+    .cat{
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      background: rgba(255,255,255,.03);
+      display:flex; align-items:center; gap:10px;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    html[data-theme="light"] .cat{background: rgba(255,255,255,.55)}
+    .cat:hover{transform: translateY(-1px); border-color: rgba(255,106,26,.35)}
+    .cat i{width:32px;height:32px;border-radius:12px; display:grid; place-items:center;
+      background: rgba(255,106,26,.16); border:1px solid rgba(255,106,26,.35); font-style:normal}
+    .cat div{font-weight:900}
+    .cat small{display:block;color:var(--muted);font-weight:700;margin-top:2px}
+    .section{padding:46px 0}
+    .sectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+    .sectionHead h2{margin:0;font-size:28px;letter-spacing:-.01em}
+    .sectionHead p{margin:0;color:var(--muted);max-width:640px;line-height:1.6}
+    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    @media (max-width:900px){.grid3{grid-template-columns:1fr}}
+    .feature{padding:18px;border-radius:18px;border:1px solid var(--border);background: rgba(255,255,255,.03)}
+    html[data-theme="light"] .feature{background: rgba(255,255,255,.55)}
+    .feature h3{margin:10px 0 6px;font-size:16px}
+    .feature p{margin:0;color:var(--muted);line-height:1.55}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    @media (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    .kpi{padding:16px;border-radius:18px;border:1px solid var(--border);background: rgba(255,255,255,.03)}
+    html[data-theme="light"] .kpi{background: rgba(255,255,255,.55)}
+    .kpi b{font-size:20px}
+    .kpi span{display:block;color:var(--muted);margin-top:6px;font-weight:700;font-size:13px}
+    .split{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;align-items:stretch}
+    @media (max-width:900px){.split{grid-template-columns:1fr}}
+    .pricing{padding:22px}
+    .priceTop{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .priceTop h3{margin:0;font-size:20px}
+    .priceTop p{margin:6px 0 0;color:var(--muted);line-height:1.55}
+    .priceTag{padding:10px 12px;border-radius:16px;border:1px solid rgba(255,106,26,.35);background: rgba(255,106,26,.12);font-weight:900}
+    .list{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+    .list li{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-weight:700}
+    .list li .ok{color:var(--good);font-weight:900}
+    .reviews{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    @media (max-width:900px){.reviews{grid-template-columns:1fr}}
+    .review{padding:18px;border-radius:18px;border:1px solid var(--border);background: rgba(255,255,255,.03)}
+    html[data-theme="light"] .review{background: rgba(255,255,255,.55)}
+    .stars{color:var(--warn);letter-spacing:1px}
+    .review p{margin:10px 0 0;color:var(--muted);line-height:1.55}
+    .faq{display:grid;gap:10px}
+    details{border:1px solid var(--border);border-radius:16px;background: rgba(255,255,255,.03);padding:14px}
+    html[data-theme="light"] details{background: rgba(255,255,255,.55)}
+    summary{cursor:pointer;font-weight:900}
+    details p{margin:10px 0 0;color:var(--muted);line-height:1.55}
+    .footer{padding:34px 0 26px;border-top:1px solid var(--border);margin-top:24px}
+    .footGrid{display:grid;grid-template-columns: 1.2fr .8fr .8fr;gap:16px}
+    @media (max-width:900px){.footGrid{grid-template-columns:1fr}}
+    .muted{color:var(--muted);line-height:1.6}
+    .pillLink{display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:999px;border:1px solid var(--border);background: rgba(255,255,255,.03);font-weight:900;margin-top:10px}
+    html[data-theme="light"] .pillLink{background: rgba(255,255,255,.65)}
+    .floatingWA{
+      position:fixed;right:18px;bottom:18px;z-index:60;
+      display:flex;align-items:center;gap:10px;
+      padding:12px 14px;border-radius:999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#111;font-weight:900;
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
+    }
+    .floatingWA span{background: rgba(255,255,255,.55);width:34px;height:34px;border-radius:999px;display:grid;place-items:center}
+    .reveal{opacity:0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease}
+    .reveal.show{opacity:1; transform:none}
+  </style>
 </head>
 <body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="MenuClick">
+        <img id="logoImg" src="./assets/logo.png" alt="MenuClick"/>
+        <strong>MenuClick</strong>
+      </a>
 
-<header class="topbar">
+      <nav class="links" aria-label="Navegação">
+        <a href="#como">Como funciona</a>
+        <a href="#lojistas">Seja parceiro</a>
+        <a href="#duvidas">Dúvidas</a>
+      </nav>
 
-  <div class="container">
-    <h2 class="logo">MenuClick</h2>
-    <nav>
-      <a href="#como">Como funciona</a>
-      <a href="#lojistas">Seja parceiro</a>
-    </nav>
-  </div>
-</header>
-
-<section class="hero">
-
-  <div class="container">
-    <h1>🚀 A plataforma de delivery da sua cidade</h1>
-    <p>Conectamos clientes e estabelecimentos com tecnologia simples, rápida e moderna.</p>
-    <div class="hero-buttons">
-      <button class="btn-primary" onclick="abrirWhatsAppCliente()">🍔 Fazer Pedido</button>
-      <button class="btn-secondary" onclick="abrirWhatsAppLojista()">🏪 Quero vender</button>
+      <div class="actions">
+        <a class="btn ghost" href="https://wa.me/5535997814774?text=Olá!%20Gostaria%20de%20uma%20consultoria%20gratuita%20com%20um%20especialista." target="_blank" rel="noreferrer">💬 Falar com especialista</a>
+        <button class="iconbtn" id="themeBtn" aria-label="Alternar tema" title="Alternar tema">🌙</button>
+      </div>
     </div>
-  </div>
-</section>
+  </header>
 
+  <main id="top">
+    <section class="hero">
+      <div class="container heroGrid">
+        <div class="card heroCopy reveal">
+          <div class="chip">⚡ Rápido • Seguro • Simples</div>
+          <h1>🚀 A plataforma de delivery da sua cidade</h1>
+          <p>Conectamos <b>clientes</b> e <b>estabelecimentos</b> com uma experiência moderna — e o pedido vai direto pro WhatsApp, do jeito mais simples.</p>
 
-<section class="stats">
-  <div class="container stats-grid">
-    <div>
-      <h3>⚡ Rápido</h3>
-      <p>Pedidos organizados e práticos.</p>
-    </div>
-    <div>
-      <h3>📈 Local</h3>
-      <p>Valorizando negócios da sua cidade.</p>
-    </div>
-    <div>
-      <h3>🔒 Seguro</h3>
-      <p>Experiência confiável e moderna.</p>
-    </div>
-  </div>
-</section>
+          <div class="ctaRow">
+            <a class="btn primary" href="https://wa.me/5535997814774?text=Olá!%20Vi%20o%20site%20da%20MenuClick%20e%20gostaria%20de%20solicitar%20um%20orçamento%20personalizado%20para%20o%20meu%20projeto." target="_blank" rel="noreferrer">🍔 Fazer pedido</a>
+            <a class="btn" href="https://wa.me/5535997814774?text=Olá!%20Quero%20transformar%20minha%20presença%20digital%20com%20a%20MenuClick." target="_blank" rel="noreferrer">🏪 Quero vender</a>
+          </div>
 
-<section id="lojistas" class="fundador">
-  <div class="container">
-    <h2>🎖 Seja um Parceiro Fundador</h2>
-    <p>Os primeiros 10 estabelecimentos terão condições exclusivas.</p>
-    <button class="btn-primary" onclick="abrirWhatsAppLojista()">Garantir minha vaga</button>
-  </div>
-</section>
+          <div class="subRow">
+            <div class="mini">
+              <div class="bubble">⚡</div>
+              <div><b>Pedido em 1 clique</b><span>Fluxo simples e rápido para o cliente.</span></div>
+            </div>
+            <div class="mini">
+              <div class="bubble">🧾</div>
+              <div><b>Painel do parceiro</b><span>Produtos, categorias e vitrine em um lugar só.</span></div>
+            </div>
+            <div class="mini">
+              <div class="bubble">🛡️</div>
+              <div><b>Aprovação segura</b><span>Checagem básica antes de liberar o painel.</span></div>
+            </div>
+          </div>
+        </div>
 
-<footer class="footer">
-  <div class="container">
-    <p>© 2026 MenuClick - Todos os direitos reservados</p>
-  </div>
-</footer>
+        <div class="card heroVisual reveal">
+          <div class="phone">
+            <div class="phoneTop">
+              <div class="pill">Destaques do dia</div>
+              <div class="pill" id="slideTag">Restaurantes</div>
+            </div>
 
-<script>
-function abrirWhatsAppCliente(){
-  window.open("https://wa.me/5535997814774?text=Olá, quero fazer um pedido pela MenuClick!","_blank");
-}
-function abrirWhatsAppLojista(){
-  window.open("https://wa.me/5535997814774?text=Olá, quero ser parceiro fundador da MenuClick!","_blank");
-}
-</script>
+            <div class="slides">
+              <div class="slide" id="slideBox" aria-label="Banner rotativo">
+                <div class="slideInner">
+                  <div class="badge" id="slideBadge">🍔 Restaurantes</div>
+                  <div class="stitle" id="slideTitle">Promoções e combos do dia</div>
+                  <div class="ssub" id="slideSub">Descubra novidades perto de você.</div>
+                </div>
+              </div>
+              <div class="dots" id="dots"></div>
+            </div>
 
+            <div class="catGrid" aria-label="Categorias">
+              <div class="cat"><i>🍔</i><div>Restaurantes<small>Combos e pratos</small></div></div>
+              <div class="cat"><i>🛒</i><div>Mercados<small>Itens do dia</small></div></div>
+              <div class="cat"><i>💊</i><div>Farmácia<small>Cuidados</small></div></div>
+              <div class="cat"><i>🥤</i><div>Bebidas<small>Geladas</small></div></div>
+              <div class="cat"><i>🍦</i><div>Sorveterias<small>Sobremesas</small></div></div>
+              <div class="cat"><i>🐾</i><div>Petshop<small>Seu pet</small></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section" id="como">
+      <div class="container">
+        <div class="sectionHead reveal">
+          <div>
+            <h2>Como funciona</h2>
+            <p>Um caminho bem simples para o cliente — e um painel direto para quem vende.</p>
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div class="feature reveal">
+            <div class="bubble">1</div>
+            <h3>O cliente escolhe</h3>
+            <p>Categorias e vitrine organizadas. O foco é rapidez, sem complicação.</p>
+          </div>
+          <div class="feature reveal">
+            <div class="bubble">2</div>
+            <h3>O pedido é enviado</h3>
+            <p>O cliente confirma e o pedido vai para o WhatsApp (fluxo leve e rápido).</p>
+          </div>
+          <div class="feature reveal">
+            <div class="bubble">3</div>
+            <h3>O lojista gerencia</h3>
+            <p>No painel, o parceiro edita produtos, fotos e informações da loja.</p>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="kpis">
+          <div class="kpi reveal"><b>+Vendas</b><span>Vitrine organizada para converter melhor</span></div>
+          <div class="kpi reveal"><b>+Velocidade</b><span>Menos passos até finalizar o pedido</span></div>
+          <div class="kpi reveal"><b>+Confiança</b><span>Aprovação básica antes de liberar o painel</span></div>
+          <div class="kpi reveal"><b>+Suporte</b><span>Atendimento rápido via WhatsApp</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="lojistas">
+      <div class="container split">
+        <div class="card pricing reveal">
+          <div class="priceTop">
+            <div>
+              <h3>Para lojistas</h3>
+              <p>Comece com uma vitrine profissional e controle total do seu catálogo.</p>
+            </div>
+            <div class="priceTag">Parceiro fundador</div>
+          </div>
+
+          <ul class="list">
+            <li><span class="ok">✔</span> Cadastro rápido e análise em até <b>24h</b></li>
+            <li><span class="ok">✔</span> Painel para editar <b>produtos, fotos, categorias</b></li>
+            <li><span class="ok">✔</span> Apoio para configurar vitrine e promoções</li>
+            <li><span class="ok">✔</span> Atendimento via WhatsApp para acelerar aprovação</li>
+          </ul>
+
+          <div style="height:14px"></div>
+
+          <div class="ctaRow">
+            <a class="btn primary" href="https://wa.me/5535997814774?text=Olá!%20Quero%20transformar%20minha%20presença%20digital%20com%20a%20MenuClick." target="_blank" rel="noreferrer">🚀 Quero ser parceiro</a>
+            <a class="btn" href="https://wa.me/5535997814774?text=Olá!%20Gostaria%20de%20uma%20consultoria%20gratuita%20com%20um%20especialista." target="_blank" rel="noreferrer">📞 Tirar dúvidas</a>
+          </div>
+
+          <p class="muted" style="margin:0">* Você pode ajustar preços e regras depois. A prioridade agora é colocar os primeiros parceiros no ar.</p>
+        </div>
+
+        <div class="card pricing reveal">
+          <h3 style="margin:0 0 8px">Primeiros 10 parceiros com taxa especial</h3>
+          <p class="muted" style="margin:0 0 14px">Oferta de lançamento para iniciar a base na sua cidade com força.</p>
+
+          <div class="grid3" style="grid-template-columns:1fr;gap:12px">
+            <div class="feature">
+              <div class="bubble">💸</div>
+              <h3 style="margin:10px 0 6px">Taxa de lançamento</h3>
+              <p>Condição diferenciada para os primeiros parceiros que entrarem e publicarem a vitrine.</p>
+            </div>
+            <div class="feature">
+              <div class="bubble">📈</div>
+              <h3 style="margin:10px 0 6px">Setup assistido</h3>
+              <p>Ajudamos a organizar categorias e fotos para a loja ficar “top” desde o dia 1.</p>
+            </div>
+            <div class="feature">
+              <div class="bubble">🏷️</div>
+              <h3 style="margin:10px 0 6px">Destaque na vitrine</h3>
+              <p>Parceiros fundadores aparecem em destaque na fase inicial.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="sectionHead reveal">
+          <div>
+            <h2>O que as pessoas acham</h2>
+            <p>Exemplos de avaliações para deixar o site com cara de produto real. Depois você pode trocar pelos seus depoimentos.</p>
+          </div>
+        </div>
+
+        <div class="reviews">
+          <div class="review reveal">
+            <div class="stars">★★★★★</div>
+            <b>“Rápido e bonito.”</b>
+            <p>“Gostei porque é simples e o pedido vai direto pro WhatsApp.”</p>
+            <div class="muted" style="margin-top:10px;font-weight:800">— Marina</div>
+          </div>
+          <div class="review reveal">
+            <div class="stars">★★★★★</div>
+            <b>“Cara de app de verdade.”</b>
+            <p>“A vitrine ficou organizada e ficou fácil de entender.”</p>
+            <div class="muted" style="margin-top:10px;font-weight:800">— Lucas</div>
+          </div>
+          <div class="review reveal">
+            <div class="stars">★★★★☆</div>
+            <b>“Bem prático.”</b>
+            <p>“O atendimento no WhatsApp respondeu rápido e ajudou bastante.”</p>
+            <div class="muted" style="margin-top:10px;font-weight:800">— Camila</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="duvidas">
+      <div class="container">
+        <div class="sectionHead reveal">
+          <div>
+            <h2>Dúvidas rápidas</h2>
+            <p>As perguntas que mais ajudam na conversão (cliente e lojista).</p>
+          </div>
+        </div>
+
+        <div class="faq">
+          <details class="reveal">
+            <summary>Como faço um pedido?</summary>
+            <p>Toque em <b>Fazer pedido</b> e você vai direto pro WhatsApp. Você manda a mensagem e combina com o estabelecimento.</p>
+          </details>
+          <details class="reveal">
+            <summary>Como viro parceiro?</summary>
+            <p>Clique em <b>Quero vender</b>. A gente orienta o cadastro e a sua loja entra em análise (até 24h).</p>
+          </details>
+          <details class="reveal">
+            <summary>O painel serve para quê?</summary>
+            <p>Para atualizar informações da loja, categorias e cadastrar produtos com fotos — sem precisar programar.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footGrid">
+        <div>
+          <div class="brand" style="margin-bottom:10px">
+            <img id="logoFoot" src="./assets/logo.png" alt="MenuClick"/>
+            <strong>MenuClick</strong>
+          </div>
+          <div class="muted">Delivery e catálogo digital para sua cidade. Experiência rápida, bonita e simples.</div>
+          <a class="pillLink" href="https://wa.me/5535997814774" target="_blank" rel="noreferrer">💬 Falar no WhatsApp</a>
+          <div class="muted" style="margin-top:10px">© <span id="year"></span> MenuClick • Todos os direitos reservados.</div>
+        </div>
+        <div>
+          <b>Atalhos</b>
+          <div style="height:10px"></div>
+          <div class="muted"><a href="#como">Como funciona</a></div>
+          <div class="muted"><a href="#lojistas">Seja parceiro</a></div>
+          <div class="muted"><a href="#duvidas">Dúvidas</a></div>
+        </div>
+        <div>
+          <b>Suporte</b>
+          <div style="height:10px"></div>
+          <div class="muted">Horário: 08:00 – 21:00</div>
+          <div class="muted">Resposta rápida via WhatsApp</div>
+          <div style="height:10px"></div>
+          <a class="btn primary" href="https://wa.me/5535997814774?text=Olá!%20Gostaria%20de%20uma%20consultoria%20gratuita%20com%20um%20especialista." target="_blank" rel="noreferrer">📞 Consultoria gratuita</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <a class="floatingWA" href="https://wa.me/5535997814774" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+    <span>💬</span> WhatsApp
+  </a>
+
+  <script>
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Theme toggle (persist)
+    const THEME_KEY="mc_theme";
+    const htmlEl=document.documentElement;
+    const themeBtn=document.getElementById("themeBtn");
+    const logoImg=document.getElementById("logoImg");
+    const logoFoot=document.getElementById("logoFoot");
+
+    function setTheme(theme){
+      htmlEl.setAttribute("data-theme", theme);
+      localStorage.setItem(THEME_KEY, theme);
+      themeBtn.textContent = theme==="dark" ? "🌙" : "☀️";
+      // if you ever add a different light logo, swap here:
+      const logoSrc = theme==="dark" ? "./assets/logo.png" : "./assets/logo.png";
+      logoImg.src = logoSrc;
+      logoFoot.src = logoSrc;
+    }
+    const saved = localStorage.getItem(THEME_KEY);
+    setTheme(saved || "dark");
+    themeBtn.addEventListener("click", ()=> setTheme(htmlEl.getAttribute("data-theme")==="dark" ? "light" : "dark"));
+
+    // Simple reveal animations
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("show"); });
+    }, {threshold:.12});
+    document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
+
+    // Hero mini carousel (no images needed)
+    const slides = [
+      { tag:"Restaurantes", badge:"🍔 Restaurantes", title:"Promoções e combos do dia", sub:"Descubra novidades perto de você." },
+      { tag:"Mercados", badge:"🛒 Mercados", title:"Compras rápidas no delivery", sub:"Itens essenciais sem sair de casa." },
+      { tag:"Bebidas", badge:"🥤 Bebidas", title:"Geladas chegando em minutos", sub:"Praticidade para qualquer ocasião." },
+      { tag:"Farmácia", badge:"💊 Farmácia", title:"Cuidados do dia a dia", sub:"Encontre o que precisa com facilidade." },
+      { tag:"Petshop", badge:"🐾 Petshop", title:"Tudo pro seu pet", sub:"Ração, cuidados e mais." },
+    ];
+    let idx=0;
+    const dotsEl=document.getElementById("dots");
+    const slideTag=document.getElementById("slideTag");
+    const slideBadge=document.getElementById("slideBadge");
+    const slideTitle=document.getElementById("slideTitle");
+    const slideSub=document.getElementById("slideSub");
+
+    function renderDots(){
+      dotsEl.innerHTML="";
+      slides.forEach((_,i)=>{
+        const d=document.createElement("div");
+        d.className="dot"+(i===idx?" active":"");
+        d.addEventListener("click", ()=>{ idx=i; paint(); });
+        dotsEl.appendChild(d);
+      });
+    }
+    function paint(){
+      const s=slides[idx];
+      slideTag.textContent=s.tag;
+      slideBadge.textContent=s.badge;
+      slideTitle.textContent=s.title;
+      slideSub.textContent=s.sub;
+      renderDots();
+    }
+    paint();
+    setInterval(()=>{ idx=(idx+1)%slides.length; paint(); }, 4200);
+  </script>
 </body>
 </html>
