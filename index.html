@@ -1,503 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MenuClick | Digital Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <style>
-        :root {
-            --primary: #FF7A00;
-            --dark: #111111;
-            --dark-soft: #1a1a1a;
-            --white: #FFFFFF;
-            --gray: #bbbbbb;
-            --light-gray: #f0f0f0;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
-        body { background-color: var(--dark); color: var(--white); overflow-x: hidden; }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .orange { color: var(--primary); }
-
-        /* Navbar */
-        header {
-            padding: 20px 0; position: fixed; width: 100%; top: 0; z-index: 1000;
-            background: rgba(17, 17, 17, 0.9); backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        nav { display: flex; justify-content: space-between; align-items: center; }
-        .logo { 
-            font-size: 24px; 
-            font-weight: 800; 
-            color: var(--white); 
-            text-decoration: none; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-        }
-        .logo img { height: 40px; width: auto; }
-        
-        .nav-links { display: flex; list-style: none; gap: 30px; align-items: center; }
-        .nav-links a { color: var(--white); text-decoration: none; font-size: 14px; opacity: 0.7; transition: 0.3s; }
-        .nav-links a:hover { opacity: 1; color: var(--primary); }
-
-        /* Botões */
-        .btn { padding: 16px 32px; border-radius: 12px; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s; border: none; cursor: pointer; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(255, 122, 0, 0.2); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255, 122, 0, 0.4); }
-
-        /* Seção Genérica */
-        .section-padding { padding: 100px 0; }
-        .section-title { text-align: center; margin-bottom: 60px; }
-        .section-title h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 15px; }
-        .section-title p { max-width: 700px; margin: 0 auto; color: var(--gray); font-size: 1.1rem; }
-
-        /* Hero */
-        .hero {
-            height: 90vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: linear-gradient(rgba(17,17,17,0.8), rgba(17,17,17,0.8)), url('https://images.unsplash.com/photo-1547658718-d4469273c52e?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center center/cover no-repeat fixed;
-            color: var(--white);
-            position: relative;
-        }
-        .hero h1 { font-size: clamp(3rem, 7vw, 5rem); line-height: 1.1; margin-bottom: 25px; font-weight: 800; letter-spacing: -1px; }
-        .hero p { font-size: clamp(1rem, 2.5vw, 1.3rem); color: var(--gray); max-width: 800px; margin: 0 auto 40px; }
-
-        /* Diferenciais */
-        .why-choose-us { background-color: var(--dark-soft); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .feature-item { text-align: center; padding: 40px; border-radius: 15px; background-color: var(--dark); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-        .feature-item:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .feature-item .icon { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
-        .feature-item h3 { font-size: 1.5rem; margin-bottom: 15px; }
-        .feature-item p { color: var(--gray); }
-
-        /* Portfólio */
-        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .portfolio-card {
-            position: relative; border-radius: 20px; overflow: hidden; height: 350px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .portfolio-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .portfolio-overlay {
-            position: absolute; inset: 0; background: linear-gradient(transparent, var(--dark));
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 30px;
-            opacity: 0; transition: 0.4s;
-        }
-        .portfolio-card:hover .portfolio-overlay { opacity: 1; }
-        .portfolio-card:hover img { transform: scale(1.1); }
-        .portfolio-overlay h3 { font-size: 1.5rem; margin-bottom: 10px; }
-        .portfolio-overlay p { color: var(--gray); font-size: 0.9rem; }
-
-        /* Resultados e Testemunhos */
-        .results-love { background-color: var(--dark-soft); overflow: hidden; }
-        .metrics-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 30px; 
-            margin-top: 50px;
-            margin-bottom: 80px;
-        }
-        .metric-card {
-            background-color: var(--dark);
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s;
-        }
-        .metric-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .metric-card h3 { font-size: clamp(2.5rem, 5vw, 4rem); color: var(--primary); font-weight: 800; margin-bottom: 10px; line-height: 1; }
-        .metric-card p { font-size: 1.1rem; color: var(--white); opacity: 0.8; }
-
-        /* Carrossel de Testemunhos - ATUALIZADO PARA 2 POR VEZ */
-        .testimonial-slider { position: relative; max-width: 1100px; margin: 0 auto; overflow: hidden; }
-        .testimonial-track { display: flex; transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .testimonial-card {
-            min-width: calc(50% - 20px); /* Exibe 2 por vez */
-            background-color: var(--dark);
-            padding: 40px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin: 0 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
-        .testimonial-card .quote { font-size: 1.2rem; color: var(--gray); line-height: 1.6; margin-bottom: 25px; font-style: italic; }
-        .testimonial-card .author { font-weight: 700; color: var(--white); font-size: 1.1rem; }
-        .testimonial-card .company { font-size: 0.9rem; color: var(--primary); margin-top: 5px; }
-
-        /* Processo */
-        .process-flow { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; position: relative; }
-        .process-step { width: 200px; text-align: center; position: relative; }
-        .process-step .icon { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
-        .process-step h4 { font-size: 1.3rem; margin-bottom: 10px; }
-        .process-step p { color: var(--gray); font-size: 0.9rem; }
-        .process-flow .process-step:not(:last-child)::after {
-            content: '➔'; color: var(--gray); font-size: 2rem; position: absolute;
-            right: -40px; top: 50px; transform: translateY(-50%); z-index: 1;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* FAQ */
-        .faq-item {
-            background-color: var(--dark-soft); padding: 25px; border-radius: 15px;
-            margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer;
-            transition: 0.3s;
-        }
-        .faq-item:hover { border-color: var(--primary); }
-        .faq-question { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: 600; }
-        .faq-answer { margin-top: 15px; color: var(--gray); line-height: 1.6; display: none; }
-        .faq-item.active .faq-answer { display: block; }
-
-        /* CTA Final */
-        .cta-final { text-align: center; background-color: var(--dark-soft); padding: 80px 0; border-top: 1px solid rgba(255,255,255,0.05); }
-        .cta-final h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 20px; }
-        .cta-final p { font-size: 1.1rem; color: var(--gray); max-width: 700px; margin: 0 auto 40px; }
-
-        /* Footer */
-        .main-footer { background-color: var(--dark); padding: 80px 0 40px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; }
-        .footer-col h4 { color: var(--white); margin-bottom: 25px; font-size: 1.2rem; font-weight: 700; }
-        .footer-links { list-style: none; line-height: 2.5; }
-        .footer-links a { color: var(--gray); text-decoration: none; transition: 0.3s; }
-        .footer-links a:hover { color: var(--primary); padding-left: 5px; }
-        .social-link { display: inline-flex; align-items: center; gap: 10px; color: var(--primary); text-decoration: none; font-weight: 700; margin-top: 15px; transition: 0.3s; }
-        .social-link:hover { opacity: 0.8; transform: translateX(5px); }
-
-        .tech-stack { margin-bottom: 60px; text-align: center; overflow: hidden; }
-        .tech-title { color: var(--gray); font-size: 0.8rem; letter-spacing: 2px; font-weight: 800; margin-bottom: 30px; opacity: 0.6; }
-        .tech-slider { display: flex; overflow: hidden; position: relative; width: 100%; }
-        .tech-track { display: flex; gap: 60px; animation: scroll 20s linear infinite; width: max-content; }
-        .tech-track span { font-weight: 700; color: var(--gray); opacity: 0.5; white-space: nowrap; font-size: 1.1rem; }
-        
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links li:not(:last-child) { display: none; }
-            .hero h1 { font-size: 2.5rem; }
-            .section-title h2 { font-size: 2rem; }
-            .process-flow { flex-direction: column; align-items: center; }
-            .process-step { width: 100%; }
-            .process-flow .process-step:not(:last-child)::after { display: none; }
-            .metrics-grid { grid-template-columns: 1fr; }
-            .footer-grid { text-align: center; }
-            .social-link { justify-content: center; }
-            /* Ajuste para 1 por vez no celular */
-            .testimonial-card { min-width: 100%; margin: 0; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MenuClick | A plataforma da sua cidade</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <nav class="container">
-            <a href="#" class="logo">
-                <img src="logo menuclick.png" alt="MenuClick Logo">
-                menuclick
-            </a>
-            <ul class="nav-links">
-                <li><a href="#portfolio">Portfólio</a></li>
-                <li><a href="#results-love">Resultados</a></li> 
-                <li><a href="#processo">Processo</a></li>
-                <li><a href="#faq">Dúvidas</a></li>
-                <li><a href="https://wa.me/5535997814774?text=Olá!%20Vi%20o%20site%20da%20MenuClick%20e%20gostaria%20de%20solicitar%20um%20orçamento%20personalizado%20para%20o%20meu%20projeto." class="btn btn-primary" style="padding: 10px 20px;">Orçamento</a></li>
-            </ul>
-        </nav>
-    </header>
+<header class="topbar">
+  <div class="container">
+    <h2 class="logo">MenuClick</h2>
+    <nav>
+      <a href="#como">Como funciona</a>
+      <a href="#lojistas">Seja parceiro</a>
+    </nav>
+  </div>
+</header>
 
-    <section class="hero" id="home">
-        <div class="container" data-aos="fade-up">
-            <h1>Seu negócio merece uma <br><span class="orange">presença digital imponente.</span></h1>
-            <p>Transformamos ideias em sites de alta performance, focados em resultados e design que encanta.</p>
-            <a href="https://wa.me/5535997814774?text=Olá!%20Quero%20transformar%20minha%20presença%20digital%20com%20a%20MenuClick." class="btn btn-primary">Fale Conosco Agora</a>
-        </div>
-    </section>
-
-    <section id="why-choose-us" class="section-padding why-choose-us">
-        <div class="container">
-            <div class="section-title" data-aos="fade-up">
-                <h2>Por que a <span class="orange">MenuClick</span>?</h2>
-                <p>Mais do que criar sites, geramos valor para sua marca com estratégia, design e tecnologia de ponta.</p>
-            </div>
-            <div class="grid">
-                <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
-                    <div class="icon">✨</div>
-                    <h3>Design Exclusivo</h3>
-                    <p>Sua marca com identidade única e memorável, sem templates genéricos.</p>
-                </div>
-                <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
-                    <div class="icon">🚀</div>
-                    <h3>Alta Performance</h3>
-                    <p>Sites ultra-rápidos e otimizados para o Google, garantindo a melhor experiência.</p>
-                </div>
-                <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
-                    <div class="icon">📈</div>
-                    <h3>Foco em Conversão</h3>
-                    <p>Páginas pensadas para transformar visitantes em clientes reais e qualificados.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="portfolio" class="section-padding container">
-        <div class="section-title" data-aos="fade-up">
-            <h2>Projetos em <span class="orange">Destaque</span></h2>
-            <p>Conheça um pouco do nosso trabalho e veja como podemos transformar sua presença online.</p>
-        </div>
-        <div class="portfolio-grid">
-            <div class="portfolio-card" data-aos="fade-up">
-                <img src="https://images.unsplash.com/photo-1517292987719-0369a794ec0f?q=80&w=500" alt="Landing Page">
-                <div class="portfolio-overlay">
-                    <h3>Landing Page SaaS</h3>
-                    <p>Foco total em conversão de leads.</p>
-                </div>
-            </div>
-            <div class="portfolio-card" data-aos="fade-up" data-aos-delay="100">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=500" alt="Portal">
-                <div class="portfolio-overlay">
-                    <h3>Portal Institucional</h3>
-                    <p>Autoridade e design limpo.</p>
-                </div>
-            </div>
-            <div class="portfolio-card" data-aos="fade-up" data-aos-delay="200">
-                <img src="https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=500" alt="E-commerce">
-                <div class="portfolio-overlay">
-                    <h3>E-commerce VIP</h3>
-                    <p>Experiência de compra fluida.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="results-love" class="section-padding results-love">
-        <div class="container">
-            <div class="section-title" data-aos="fade-up">
-                <h2>Resultados que Nossos Clientes <span class="orange">Amam</span></h2>
-                <p>Nossa paixão é transformar a presença digital em crescimento real para o seu negócio.</p>
-            </div>
-            
-            <div class="metrics-grid">
-                <div class="metric-card" data-aos="fade-up">
-                    <h3>+300%</h3>
-                    <p>Aumento de Tráfego Orgânico</p>
-                </div>
-                <div class="metric-card" data-aos="fade-up" data-aos-delay="100">
-                    <h3>98%</h3>
-                    <p>Satisfação dos Clientes</p>
-                </div>
-                <div class="metric-card" data-aos="fade-up" data-aos-delay="200">
-                    <h3>+500</h3>
-                    <p>Projetos Entregues</p>
-                </div>
-            </div>
-
-            <div class="testimonial-slider" data-aos="fade-up">
-                <div class="testimonial-track" id="testimonialTrack">
-                    <div class="testimonial-card">
-                        <p class="quote">"A MenuClick superou nossas expectativas! O site ficou lindo, rápido e gerou um aumento significativo nas nossas vendas."</p>
-                        <p class="author">Ana Paula Costa</p>
-                        <p class="company">CEO, Doceria Delícias da Vovó</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <p class="quote">"Profissionais de ponta! Entregaram um portal institucional que nos trouxe mais credibilidade no mercado nacional."</p>
-                        <p class="author">Ricardo Silva</p>
-                        <p class="company">Diretor de Marketing, Consultoria Crescer+</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <p class="quote">"O suporte pós-venda deles é o diferencial. Estão sempre prontos para ajudar e sugerir melhorias constantes."</p>
-                        <p class="author">Mariana Lira</p>
-                        <p class="company">Fundadora, Fashion Trend</p>
-                    </div>
-                    <div class="testimonial-card">
-                        <p class="quote">"Conseguiram captar a essência da nossa marca e traduzir em um layout moderno e muito intuitivo. Recomendo!"</p>
-                        <p class="author">Carlos Eduardo</p>
-                        <p class="company">Proprietário, TechHub Soluções</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="processo" class="section-padding container">
-        <div class="section-title" data-aos="fade-up">
-            <h2>Nosso <span class="orange">Processo</span> de Criação</h2>
-            <p>Transparência e eficiência em cada etapa, do briefing à entrega.</p>
-        </div>
-        <div class="process-flow">
-            <div class="process-step" data-aos="fade-up">
-                <div class="icon">💡</div>
-                <h4>1. Ideia</h4>
-                <p>Coletamos suas necessidades.</p>
-            </div>
-            <div class="process-step" data-aos="fade-up" data-aos-delay="100">
-                <div class="icon">🎨</div>
-                <h4>2. Design</h4>
-                <p>Criamos layouts focados em conversão.</p>
-            </div>
-            <div class="process-step" data-aos="fade-up" data-aos-delay="200">
-                <div class="icon">💻</div>
-                <h4>3. Desenvolvimento</h4>
-                <p>Transformamos em código limpo.</p>
-            </div>
-            <div class="process-step" data-aos="fade-up" data-aos-delay="300">
-                <div class="icon">🚀</div>
-                <h4>4. Entrega</h4>
-                <p>Seu site no ar com suporte.</p>
-            </div>
-        </div>
-    </section>
-
-<section id="faq" class="section-padding container">
-    <div class="section-title" data-aos="fade-up">
-        <h2>Perguntas <span class="orange">Frequentes</span></h2>
+<section class="hero">
+  <div class="container">
+    <h1>🚀 A plataforma de delivery da sua cidade</h1>
+    <p>Conectamos clientes e estabelecimentos com tecnologia simples, rápida e moderna.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary" onclick="abrirWhatsAppCliente()">🍔 Fazer Pedido</button>
+      <button class="btn-secondary" onclick="abrirWhatsAppLojista()">🏪 Quero vender</button>
     </div>
-    <div class="faq-list">
-        <div class="faq-item" data-aos="fade-up">
-            <div class="faq-question"><span>Quanto tempo leva para o meu site ficar pronto?</span><span class="faq-toggle">+</span></div>
-            <div class="faq-answer"><p>O prazo varia de 7 a 15 dias úteis. Projetos mais simples como Landing Pages são entregues mais rápido, enquanto portais e e-commerces exigem mais tempo de desenvolvimento.</p></div>
-        </div>
-
-        <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
-            <div class="faq-question"><span>O site funciona em celulares e tablets?</span><span class="faq-toggle">+</span></div>
-            <div class="faq-answer"><p>Sim! Todos os nossos projetos são 100% responsivos, o que significa que se adaptam perfeitamente a qualquer tamanho de tela, garantindo uma excelente experiência ao utilizador.</p></div>
-        </div>
-
-        <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
-            <div class="faq-question"><span>Terei autonomia para editar o conteúdo do site?</span><span class="faq-toggle">+</span></div>
-            <div class="faq-answer"><p>Com certeza. Utilizamos plataformas intuitivas como o WordPress, que permitem que altere textos e imagens de forma simples, sem depender de um programador para mudanças básicas.</p></div>
-        </div>
-
-        <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
-            <div class="faq-question"><span>O meu site aparecerá nas pesquisas do Google?</span><span class="faq-toggle">+</span></div>
-            <div class="faq-answer"><p>Sim. Aplicamos técnicas fundamentais de SEO (otimização para motores de busca) em todos os sites para ajudar o seu negócio a ser encontrado pelos clientes certos.</p></div>
-        </div>
-
-        <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
-            <div class="faq-question"><span>Oferecem suporte após o lançamento?</span><span class="faq-toggle">+</span></div>
-            <div class="faq-answer"><p>Sim, oferecemos um período de acompanhamento após a entrega para garantir que tudo funciona perfeitamente e para tirar qualquer dúvida sobre a utilização do painel.</p></div>
-        </div>
-    </div>
+  </div>
 </section>
 
-    <section class="cta-final section-padding">
-        <div class="container" data-aos="zoom-in">
-            <h2>Pronto para o <span class="orange">próximo nível?</span></h2>
-            <p>Descubra como um site profissional pode transformar sua presença digital.</p>
-            <a href="https://wa.me/5535997814774?text=Olá!%20Gostaria%20de%20uma%20consultoria%20gratuita%20com%20um%20especialista." class="btn btn-primary">Fale com um Especialista</a>
-        </div>
-    </section>
+<section class="stats">
+  <div class="container stats-grid">
+    <div>
+      <h3>⚡ Rápido</h3>
+      <p>Pedidos organizados e práticos.</p>
+    </div>
+    <div>
+      <h3>📈 Local</h3>
+      <p>Valorizando negócios da sua cidade.</p>
+    </div>
+    <div>
+      <h3>🔒 Seguro</h3>
+      <p>Experiência confiável e moderna.</p>
+    </div>
+  </div>
+</section>
 
-    <footer class="main-footer">
-        <div class="container">
-            <div class="tech-stack" data-aos="fade-up">
-                <p class="tech-title">TECNOLOGIAS QUE UTILIZAMOS</p>
-                <div class="tech-slider">
-                    <div class="tech-track">
-                        <span>WORDPRESS</span>
-                        <span>HTML5</span>
-                        <span>ELEMENTOR PRO</span>
-                        <span>JAVASCRIPT</span>
-                        <span>GOOGLE SEO</span>
-                        <span>AWS CLOUD</span>
-                        <span>WORDPRESS</span>
-                        <span>HTML5</span>
-                        <span>ELEMENTOR PRO</span>
-                        <span>JAVASCRIPT</span>
-                        <span>GOOGLE SEO</span>
-                        <span>AWS CLOUD</span>
-                    </div>
-                </div>
-            </div>
+<section id="lojistas" class="fundador">
+  <div class="container">
+    <h2>🎖 Seja um Parceiro Fundador</h2>
+    <p>Os primeiros 10 estabelecimentos terão condições exclusivas.</p>
+    <button class="btn-primary" onclick="abrirWhatsAppLojista()">Garantir minha vaga</button>
+  </div>
+</section>
 
-            <div class="footer-grid">
-                <div class="footer-col" data-aos="fade-up">
-                    <a href="#" class="logo" style="margin-bottom: 20px;">
-                        <img src="logo menuclick.png" alt="MenuClick Logo">
-                        menuclick
-                    </a>
-                    <p style="color: var(--gray); line-height: 1.6; margin-top: 15px;">
-                        Especialistas em criar experiências digitais que convertem visitantes em clientes fiéis.
-                    </p>
-                    <a href="https://www.instagram.com/menuclik?igsh=MXVwemlpc3cxNHI2Mg==" target="_blank" class="social-link">
-                        Siga-nos no Instagram <span>→</span>
-                    </a>
-                </div>
+<footer class="footer">
+  <div class="container">
+    <p>© 2026 MenuClick - Todos os direitos reservados</p>
+  </div>
+</footer>
 
-                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
-                    <h4>Navegação</h4>
-                    <ul class="footer-links">
-                        <li><a href="#portfolio">Projetos em Destaque</a></li>
-                        <li><a href="#processo">Como trabalhamos</a></li>
-                        <li><a href="#faq">Dúvidas Comuns</a></li>
-                        <li><a href="https://wa.me/5535997814774">Solicitar Orçamento</a></li>
-                    </ul>
-                </div>
+<script>
+function abrirWhatsAppCliente(){
+  window.open("https://wa.me/5535997814774?text=Olá, quero fazer um pedido pela MenuClick!","_blank");
+}
+function abrirWhatsAppLojista(){
+  window.open("https://wa.me/5535997814774?text=Olá, quero ser parceiro fundador da MenuClick!","_blank");
+}
+</script>
 
-                <div class="footer-col" data-aos="fade-up" data-aos-delay="200">
-                    <h4>Fale Conosco</h4>
-                    <p style="color: var(--gray); margin-bottom: 10px;">contato@menuclick.com.br</p>
-                    <p style="color: var(--gray); margin-bottom: 25px;">+55 35 99781-4774</p>
-                    <p style="font-size: 0.8rem; color: var(--primary); font-weight: 700; letter-spacing: 1px;">DISPONÍVEL PARA TODO O BRASIL</p>
-                </div>
-            </div>
-
-            <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center;">
-                <p style="color: var(--gray); font-size: 0.85rem;">
-                    &copy; 2024 MenuClick Digital Experience. Todos os direitos reservados.
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-        AOS.init({ duration: 1000, once: true });
-
-        // Script FAQ
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.addEventListener('click', () => {
-                item.classList.toggle('active');
-                const answer = item.querySelector('.faq-answer');
-                const toggle = item.querySelector('.faq-toggle');
-                if (answer) {
-                    answer.style.display = item.classList.contains('active') ? 'block' : 'none';
-                }
-                if (toggle) {
-                    toggle.textContent = item.classList.contains('active') ? '-' : '+';
-                }
-            });
-        });
-
-        // Script Carrossel de Testemunhos - ATUALIZADO (2 por vez e 8 segundos)
-        let currentSlide = 0;
-        const track = document.getElementById('testimonialTrack');
-        const slides = document.querySelectorAll('.testimonial-card');
-        
-        function moveSlide() {
-            const isMobile = window.innerWidth <= 768;
-            const step = isMobile ? 1 : 2;
-            const totalSteps = isMobile ? slides.length : Math.ceil(slides.length / 2);
-
-            currentSlide = (currentSlide + 1) % totalSteps;
-            
-            // Move 100% por vez no desktop (que equivale a 2 cards)
-            const percentage = currentSlide * 100;
-            track.style.transform = `translateX(-${percentage}%)`;
-        }
-
-        setInterval(moveSlide, 8000); // Troca a cada 8 segundos
-    </script>
 </body>
 </html>
