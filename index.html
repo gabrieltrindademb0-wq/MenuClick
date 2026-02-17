@@ -198,6 +198,35 @@
             .testimonial-card { min-width: 100%; margin: 0; }
         }
     </style>
+
+<!-- ✅ Correção automática de centralização mobile -->
+<style>
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+header{
+  left: 0;
+  right: 0;
+  width: auto;
+}
+
+section, footer {
+  width: 100%;
+}
+
+.testimonial-slider {
+  overflow: hidden;
+}
+
+@media (max-width: 768px){
+  .hero{
+    background-attachment: scroll;
+  }
+}
+</style>
+
 </head>
 <body>
 
