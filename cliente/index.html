@@ -18,6 +18,7 @@
         <a class="active" href="#inicio">Início</a>
         <a href="#restaurantes">Restaurantes</a>
         <a href="#pedidos">Pedidos</a>
+        <a href="#avaliacoes">Avaliações</a>
         <button data-open-profile>Perfil</button>
       </nav>
       <div class="top-actions">
@@ -106,9 +107,18 @@
       <div class="container">
         <div class="section-head">
           <div><h3>Meus pedidos</h3><p>Histórico com status, rastreamento, suporte e avaliação.</p></div>
-          <button class="btn ghost sm" id="exportMyData">Exportar meus dados</button>
         </div>
         <div class="grid cols-2" id="ordersGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="avaliacoes">
+      <div class="container">
+        <div class="section-head">
+          <div><h3>Avaliações</h3><p>Média de estrelas, comentários e fotos enviadas pelos clientes.</p></div>
+        </div>
+        <div id="reviewsSummary" class="review-summary-grid"></div>
+        <div id="reviewsGrid" class="reviews-grid" style="margin-top:16px"></div>
       </div>
     </section>
   </main>
@@ -117,6 +127,7 @@
     <a href="#inicio" class="active"><b>🏠</b>Início</a>
     <a href="#restaurantes"><b>🍽️</b>Lojas</a>
     <button data-open-cart><b>🛒</b>Carrinho</button>
+    <a href="#avaliacoes"><b>⭐</b>Avaliações</a>
     <button data-open-profile><b>👤</b>Perfil</button>
   </nav>
 
@@ -254,6 +265,46 @@
     <section class="modal-panel">
       <button class="close-x" data-close>×</button>
       <div id="orderDetail"></div>
+    </section>
+  </div>
+
+
+
+  <div class="modal" id="reviewModal">
+    <div class="overlay" data-close></div>
+    <section class="modal-panel">
+      <button class="close-x" data-close>×</button>
+      <form id="reviewForm" class="grid">
+        <div>
+          <span class="badge orange">Avaliação</span>
+          <h3 style="margin:8px 0 4px;letter-spacing:-.05em">Como foi seu pedido?</h3>
+          <p id="reviewOrderInfo" style="margin:0;color:var(--muted);font-weight:800"></p>
+        </div>
+        <div class="rating-picker" aria-label="Escolha a nota">
+          <button type="button" data-review-star="1">★</button>
+          <button type="button" data-review-star="2">★</button>
+          <button type="button" data-review-star="3">★</button>
+          <button type="button" data-review-star="4">★</button>
+          <button type="button" data-review-star="5">★</button>
+        </div>
+        <strong id="reviewRatingText" class="rating-text">5 estrelas</strong>
+        <label class="field">Comentário
+          <textarea id="reviewComment" class="textarea" placeholder="Conte como foi a comida, entrega, embalagem e atendimento."></textarea>
+        </label>
+        <div class="upload-card review-upload">
+          <div class="upload-preview" id="reviewPhotoMain"><span>📷</span></div>
+          <div class="upload-info">
+            <b>Fotos da avaliação</b>
+            <small>Adicione até 4 imagens do pedido. Elas aparecem na área de avaliações e no painel do restaurante.</small>
+            <div class="row" style="margin-top:12px">
+              <label class="btn secondary sm file-btn">Escolher fotos<input id="reviewPhotosInput" type="file" accept="image/*" multiple /></label>
+              <button class="btn ghost sm" type="button" id="clearReviewPhotos">Remover fotos</button>
+            </div>
+          </div>
+        </div>
+        <div id="reviewPhotoPreview" class="review-photo-preview"></div>
+        <button class="btn block" type="submit">Enviar avaliação</button>
+      </form>
     </section>
   </div>
 

@@ -145,3 +145,25 @@ img{max-width:100%;display:block}.hidden{display:none!important}.sr{position:abs
 .upload-tip{color:#8a5a2d!important}.file-btn{position:relative;overflow:hidden;cursor:pointer}.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}.product-admin-item{align-items:center}.product-admin-left{display:flex;align-items:center;gap:12px}.product-thumb{width:58px;height:58px;border-radius:18px;object-fit:cover;border:1px solid #ffd8b5;background:#fff7ef;display:grid;place-items:center;flex:0 0 auto;box-shadow:var(--shadow-xs)}.product-thumb.fallback{font-size:1.7rem}
 .product-photo{object-fit:cover;overflow:hidden}.product-photo.large{width:96px!important;height:96px!important;border-radius:28px!important}.product-photo.cart{width:48px!important;height:48px!important;border-radius:16px!important;font-size:1.4rem!important}
 @media (max-width:760px){.upload-card{grid-template-columns:1fr}.upload-preview{width:100%;height:190px}.product-admin-left{align-items:flex-start}.product-admin-item{align-items:flex-start}}
+
+
+/* Avaliações com média de estrelas e fotos */
+.review-summary-grid{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:13px}
+.review-metric strong{display:flex;align-items:center;gap:8px}
+.review-stars{display:inline-flex;align-items:center;gap:1px;color:var(--orange);font-weight:1000;letter-spacing:.02em;white-space:nowrap}
+.review-stars.big{font-size:1.35rem}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.review-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow-sm);display:grid;gap:12px;align-content:start}
+.review-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.review-card b{letter-spacing:-.02em}.review-card small{display:block;margin-top:4px;color:var(--muted);font-weight:800}.review-card p{margin:0;color:#5d5045;font-weight:750;line-height:1.5}
+.review-photos{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.review-photos.inline{grid-template-columns:repeat(6,72px);overflow:auto;padding-bottom:2px;margin-top:12px}
+.review-photos img,.review-photo-preview img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:17px;border:1px solid #ffd8b5;background:#fff7ef;box-shadow:var(--shadow-xs)}
+.restaurant-reviews-box{margin:16px 0 20px;background:linear-gradient(180deg,#fffaf5,#fff);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow-xs)}
+.rating-picker{display:flex;justify-content:center;gap:8px;background:#fffaf5;border:1px solid var(--line);border-radius:22px;padding:13px}
+.rating-picker button{width:44px;height:44px;border-radius:15px;background:#fff;border:1px solid #ffd8b5;color:#d1b6a0;font-size:1.35rem;font-weight:1000;box-shadow:var(--shadow-xs);transition:.16s ease}
+.rating-picker button.active,.rating-picker button:hover{background:var(--orange);border-color:var(--orange);color:#fff;transform:translateY(-1px)}
+.rating-text{text-align:center;color:var(--orange-700);font-size:1rem}.review-upload{grid-template-columns:112px 1fr}.review-upload .upload-preview{width:112px;height:104px}
+.review-photo-preview{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.review-photo-preview span{grid-column:1/-1;border:1px dashed #efc49c;border-radius:16px;padding:14px;text-align:center;color:var(--muted);font-weight:850;background:#fffaf5}
+.metric small{display:block;color:var(--muted);font-weight:800;margin-top:4px;line-height:1.35}
+@media (max-width:1100px){.reviews-grid{grid-template-columns:repeat(2,1fr)}.review-summary-grid{grid-template-columns:1fr 1fr}.review-photos.inline{grid-template-columns:repeat(4,72px)}}
+@media (max-width:760px){.reviews-grid,.review-summary-grid{grid-template-columns:1fr}.review-card-head{flex-direction:column}.review-upload{grid-template-columns:1fr}.review-upload .upload-preview{width:100%;height:180px}.review-photo-preview{grid-template-columns:repeat(2,1fr)}.review-photos.inline{grid-template-columns:repeat(3,72px)}}

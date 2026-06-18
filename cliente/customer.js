@@ -2,7 +2,7 @@
 (function(){
   'use strict';
   const MC=window.MC;
-  let data, selectedCategory='all', currentRestaurant=null, currentProduct=null, cart=[];
+  let data, selectedCategory='all', currentRestaurant=null, currentProduct=null, cart=[], reviewTarget=null, reviewPhotoDraft=[], selectedReviewRating=5;
 
   document.addEventListener('DOMContentLoaded', init);
 
@@ -27,10 +27,13 @@
     MC.q('#useGps')?.addEventListener('click',useGps);
     MC.q('#addPayment')?.addEventListener('click',addPayment);
     MC.q('#deleteAccount')?.addEventListener('click',deleteLocalData);
-    MC.q('#exportMyData')?.addEventListener('click',()=>MC.downloadJSON('meus-dados-menuclick.json',{customer:data.customer,addresses:data.addresses,payments:data.payments,orders:data.orders}));
+    MC.q('#reviewForm')?.addEventListener('submit',saveReview);
+    MC.q('#reviewPhotosInput')?.addEventListener('change',handleReviewPhotos);
+    MC.q('#clearReviewPhotos')?.addEventListener('click',()=>{ reviewPhotoDraft=[]; const inp=MC.q('#reviewPhotosInput'); if(inp) inp.value=''; renderReviewPhotoPreview(); });
+    MC.qa('[data-review-star]').forEach(btn=>btn.addEventListener('click',()=>setReviewRating(Number(btn.dataset.reviewStar))));
     window.addEventListener('storage',()=>{ data=MC.load(); renderAll(); });
   }
-  function renderAll(){ renderStats(); renderCategories(); renderBanners(); renderRestaurants(); renderOrders(); renderTopAddress(); renderCart(); }
+  function renderAll(){ renderStats(); renderCategories(); renderBanners(); renderRestaurants(); renderOrders(); renderReviews(); renderTopAddress(); renderCart(); }
   function renderStats(){
     setText('statStores',(data.restaurants||[]).filter(r=>r.open).length);
     setText('statCats',MC.activeCategories(data).length);
@@ -73,13 +76,16 @@
   function cardRestaurant(r){
     const fav=(data.customer.favorites||[]).includes(r.id);
     const coupon=MC.activeCoupons(data,r.id)[0];
+    const stats=storeReviewStats(r.id);
+    const rating=stats.count?stats.average:Number(r.rating||0);
+    const reviewCount=stats.count||Number(r.reviewCount||0);
     return `<article class="restaurant-card">
       <button class="heart ${fav?'active':''}" data-fav="${r.id}" title="Favorito">${fav?'♥':'♡'}</button>
       <div class="cover"><span>${MC.text(r.coverEmoji||'🍽️')}</span></div>
       <div class="restaurant-body">
         <div class="restaurant-title"><h4>${MC.text(r.name)}</h4><span class="badge ${r.open?'success':'danger'}">${r.open?'Aberto':'Fechado'}</span></div>
         <p>${MC.text(r.description||'')}</p>
-        <div class="meta"><span class="badge">⭐ ${Number(r.rating||0).toFixed(1)}</span><span class="badge">${r.deliveryTime||'-'} min</span><span class="badge">${Number(r.deliveryFee||0)===0?'Entrega grátis':MC.money(r.deliveryFee)}</span>${r.superStore?'<span class="badge orange">Super</span>':''}${coupon?`<span class="badge orange">${MC.text(coupon.code)}</span>`:''}</div>
+        <div class="meta"><span class="badge">⭐ ${Number(rating||0).toFixed(1)}${reviewCount?` • ${reviewCount}`:''}</span><span class="badge">${r.deliveryTime||'-'} min</span><span class="badge">${Number(r.deliveryFee||0)===0?'Entrega grátis':MC.money(r.deliveryFee)}</span>${r.superStore?'<span class="badge orange">Super</span>':''}${coupon?`<span class="badge orange">${MC.text(coupon.code)}</span>`:''}</div>
         <div class="row between" style="margin-top:14px"><small style="color:var(--muted);font-weight:800">Mín. ${MC.money(r.minOrder)}</small><button class="btn sm" data-open-restaurant="${r.id}">Ver cardápio</button></div>
       </div>
     </article>`;
@@ -88,11 +94,15 @@
     currentRestaurant=MC.getRestaurant(data,id); if(!currentRestaurant) return;
     const prods=MC.getProducts(data,id);
     const payments=Object.entries(currentRestaurant.paymentMethods||{}).filter(([,v])=>v).map(([k])=>labelPayment(k)).join(', ');
+    const stats=storeReviewStats(id);
+    const rating=stats.count?stats.average:Number(currentRestaurant.rating||0);
+    const reviewCount=stats.count||Number(currentRestaurant.reviewCount||0);
     MC.q('#restaurantDetail').innerHTML=`
       <div class="cover" style="border-radius:24px;height:170px"><span>${MC.text(currentRestaurant.coverEmoji||'🍽️')}</span></div>
       <div class="section-head" style="margin-top:18px"><div><span class="badge orange">${MC.text(currentRestaurant.category)}</span><h3>${MC.text(currentRestaurant.name)}</h3><p>${MC.text(currentRestaurant.description)}</p></div><button class="btn secondary sm" data-fav-modal>${(data.customer.favorites||[]).includes(id)?'♥ Favorito':'♡ Favoritar'}</button></div>
-      <div class="grid cols-4" style="margin-bottom:18px"><div class="metric"><span>Avaliação</span><strong>⭐ ${Number(currentRestaurant.rating||0).toFixed(1)}</strong></div><div class="metric"><span>Entrega</span><strong>${currentRestaurant.deliveryTime||'-'} min</strong></div><div class="metric"><span>Taxa</span><strong>${Number(currentRestaurant.deliveryFee||0)===0?'Grátis':MC.money(currentRestaurant.deliveryFee)}</strong></div><div class="metric"><span>Mínimo</span><strong>${MC.money(currentRestaurant.minOrder)}</strong></div></div>
+      <div class="grid cols-4" style="margin-bottom:18px"><div class="metric"><span>Avaliação</span><strong>⭐ ${Number(rating||0).toFixed(1)}</strong><small>${reviewCount} avaliações</small></div><div class="metric"><span>Entrega</span><strong>${currentRestaurant.deliveryTime||'-'} min</strong></div><div class="metric"><span>Taxa</span><strong>${Number(currentRestaurant.deliveryFee||0)===0?'Grátis':MC.money(currentRestaurant.deliveryFee)}</strong></div><div class="metric"><span>Mínimo</span><strong>${MC.money(currentRestaurant.minOrder)}</strong></div></div>
       <div class="notice"><b>Endereço:</b> ${MC.text(currentRestaurant.street)}, ${MC.text(currentRestaurant.number)} — ${MC.text(currentRestaurant.neighborhood)}. <b>Pagamento:</b> ${payments||'Não informado'}.</div>
+      ${restaurantReviewsBlock(id)}
       <h3 style="letter-spacing:-.05em">Cardápio</h3>
       <div class="menu-grid">${prods.map(productCard).join('') || '<div class="empty">Nenhum produto cadastrado.</div>'}</div>`;
     MC.qa('[data-product]',MC.q('#restaurantDetail')).forEach(b=>b.addEventListener('click',()=>openProduct(b.dataset.product)));
@@ -207,8 +217,76 @@
     const o=(data.orders||[]).find(x=>x.id===id); if(!o) return;
     MC.q('#orderDetail').innerHTML=`<span class="badge orange">${MC.text(o.code)}</span><h3 style="letter-spacing:-.05em">${MC.text(o.restaurantName)}</h3><p style="color:var(--muted);font-weight:800">${new Date(o.createdAt).toLocaleString('pt-BR')} • ${MC.STATUS_LABELS[o.status]}</p><div class="timeline">${timeline(o.status)}</div><div class="total-box" style="margin:16px 0"><div class="total-line"><span>Total</span><b>${MC.money(o.totals?.total)}</b></div><div class="total-line"><span>Código de entrega</span><b>${MC.text(o.confirmationCode)}</b></div></div><h4>Itens</h4>${(o.items||[]).map(i=>`<div class="mini-item"><span>${i.qty}x ${MC.text(i.name)}</span><b>${MC.money(i.price*i.qty)}</b></div>`).join('')}<div class="grid cols-2" style="margin-top:16px"><button class="btn secondary" id="supportBtn">Pedir ajuda</button><button class="btn" id="rateBtn">Avaliar pedido</button></div>`;
     MC.q('#supportBtn')?.addEventListener('click',()=>{ const msg=prompt('Descreva o problema com o pedido:'); if(msg){ data.support.unshift({id:MC.uid('sup'), orderId:o.id, restaurantId:o.restaurantId, message:msg, status:'aberto', createdAt:new Date().toISOString()}); MC.addLog(data,'Suporte aberto',o.code); MC.save(data,false); MC.toast('Chamado registrado'); }});
-    MC.q('#rateBtn')?.addEventListener('click',()=>{ const rating=Number(prompt('Nota de 1 a 5:','5')); const comment=prompt('Comentário da avaliação:','Muito bom!')||''; if(rating){ data.reviews.unshift({id:MC.uid('rev'), orderId:o.id, restaurantId:o.restaurantId, rating, comment, createdAt:new Date().toISOString()}); MC.addLog(data,'Avaliação criada',`${o.code} • ${rating} estrelas`); MC.save(data,false); MC.toast('Avaliação enviada'); }});
+    MC.q('#rateBtn')?.addEventListener('click',()=>openReview(o.id));
     openModal('orderModal');
+  }
+  function renderReviews(){
+    const summary=MC.q('#reviewsSummary'); const grid=MC.q('#reviewsGrid');
+    if(!summary || !grid) return;
+    const reviews=[...(data.reviews||[])].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+    const avg=reviews.length ? reviews.reduce((s,r)=>s+Number(r.rating||0),0)/reviews.length : 0;
+    const photos=reviews.flatMap(r=>Array.isArray(r.photos)?r.photos:[]);
+    const stores=new Set(reviews.map(r=>r.restaurantId).filter(Boolean));
+    summary.innerHTML=`<div class="metric review-metric"><span>Média geral</span><strong>${avg?avg.toFixed(1):'0.0'} ⭐</strong><small>${stars(avg)} baseada em ${reviews.length} avaliações</small></div><div class="metric review-metric"><span>Fotos</span><strong>${photos.length}</strong><small>imagens enviadas por clientes</small></div><div class="metric review-metric"><span>Lojas avaliadas</span><strong>${stores.size}</strong><small>restaurantes com feedback</small></div>`;
+    grid.innerHTML=reviews.length?reviews.map(reviewCard).join(''):'<div class="empty">Nenhuma avaliação ainda. Depois de fazer um pedido, toque em “Avaliar pedido” para enviar estrelas, comentário e fotos.</div>';
+    MC.qa('[data-review-open-store]',grid).forEach(b=>b.addEventListener('click',()=>openRestaurant(b.dataset.reviewOpenStore)));
+  }
+  function reviewCard(r){
+    const store=MC.getRestaurant(data,r.restaurantId)||{};
+    const photos=Array.isArray(r.photos)?r.photos:[];
+    return `<article class="review-card"><div class="review-card-head"><div><b>${MC.text(r.customerName || r.customer?.name || 'Cliente MenuClick')}</b><small>${MC.text(store.name || r.restaurantName || 'Restaurante')} • ${new Date(r.createdAt||Date.now()).toLocaleDateString('pt-BR')}</small></div><span class="review-stars">${stars(r.rating)}</span></div><p>${MC.text(r.comment||'Sem comentário.')}</p>${photos.length?`<div class="review-photos">${photos.slice(0,4).map(src=>`<img src="${attr(src)}" alt="Foto da avaliação">`).join('')}</div>`:''}${r.restaurantId?`<button class="btn secondary sm" data-review-open-store="${attr(r.restaurantId)}">Ver restaurante</button>`:''}</article>`;
+  }
+  function restaurantReviewsBlock(restaurantId){
+    const reviews=reviewsForStore(restaurantId).slice(0,3);
+    const stats=storeReviewStats(restaurantId);
+    const photos=stats.photos.slice(0,6);
+    return `<div class="restaurant-reviews-box"><div class="row between"><div><h3 style="margin:0;letter-spacing:-.05em">Avaliações da loja</h3><p style="margin:4px 0 0;color:var(--muted);font-weight:800">${stats.count?`${stats.average.toFixed(1)} de 5 • ${stats.count} avaliações`:'Ainda sem avaliações reais'}</p></div><span class="review-stars big">${stars(stats.count?stats.average:Number(MC.getRestaurant(data,restaurantId)?.rating||0))}</span></div>${photos.length?`<div class="review-photos inline">${photos.map(src=>`<img src="${attr(src)}" alt="Foto de avaliação">`).join('')}</div>`:''}<div class="mini-list" style="margin-top:12px">${reviews.length?reviews.map(r=>`<div class="mini-item"><div><b>${stars(r.rating)}</b><small style="display:block;color:var(--muted);font-weight:800">${MC.text(r.comment||'Sem comentário')}</small></div><span>${MC.text(r.customerName||'Cliente')}</span></div>`).join(''):'<div class="empty">As avaliações aparecerão aqui quando os clientes avaliarem pedidos.</div>'}</div></div>`;
+  }
+  function reviewsForStore(id){ return (data.reviews||[]).filter(r=>r.restaurantId===id); }
+  function storeReviewStats(id){
+    const reviews=reviewsForStore(id);
+    const avg=reviews.length ? reviews.reduce((s,r)=>s+Number(r.rating||0),0)/reviews.length : 0;
+    const photos=reviews.flatMap(r=>Array.isArray(r.photos)?r.photos:[]);
+    return {count:reviews.length, average:avg, photos};
+  }
+  function stars(value){
+    const n=Math.max(0,Math.min(5,Math.round(Number(value||0))));
+    return '★'.repeat(n)+'☆'.repeat(5-n);
+  }
+  function openReview(orderId){
+    reviewTarget=(data.orders||[]).find(x=>x.id===orderId);
+    if(!reviewTarget) return;
+    selectedReviewRating=5; reviewPhotoDraft=[];
+    const input=MC.q('#reviewPhotosInput'); if(input) input.value='';
+    const comment=MC.q('#reviewComment'); if(comment) comment.value='';
+    setReviewRating(5); renderReviewPhotoPreview();
+    const info=MC.q('#reviewOrderInfo'); if(info) info.textContent=`${reviewTarget.code} • ${reviewTarget.restaurantName}`;
+    openModal('reviewModal');
+  }
+  function setReviewRating(n){
+    selectedReviewRating=Math.max(1,Math.min(5,Number(n||5)));
+    MC.qa('[data-review-star]').forEach(btn=>btn.classList.toggle('active',Number(btn.dataset.reviewStar)<=selectedReviewRating));
+    setText('reviewRatingText',`${selectedReviewRating} ${selectedReviewRating===1?'estrela':'estrelas'}`);
+  }
+  function handleReviewPhotos(e){
+    const files=[...(e.target.files||[])].filter(f=>/^image\//.test(f.type)).slice(0,4);
+    if(!files.length){ reviewPhotoDraft=[]; renderReviewPhotoPreview(); return; }
+    Promise.all(files.map(file=>new Promise(resolve=>{ const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>resolve(null); reader.readAsDataURL(file); }))).then(list=>{ reviewPhotoDraft=list.filter(Boolean); renderReviewPhotoPreview(); });
+  }
+  function renderReviewPhotoPreview(){
+    const preview=MC.q('#reviewPhotoPreview'); const main=MC.q('#reviewPhotoMain');
+    if(preview) preview.innerHTML=reviewPhotoDraft.length?reviewPhotoDraft.map(src=>`<img src="${attr(src)}" alt="Prévia da foto">`).join(''):'<span>Nenhuma foto selecionada.</span>';
+    if(main){ main.innerHTML=reviewPhotoDraft[0]?`<img src="${attr(reviewPhotoDraft[0])}" alt="Prévia principal">`:'<span>📷</span>'; main.classList.toggle('has-image',!!reviewPhotoDraft[0]); }
+  }
+  function saveReview(e){
+    e.preventDefault(); if(!reviewTarget) return;
+    const comment=(MC.q('#reviewComment')?.value||'').trim();
+    data.reviews=(data.reviews||[]).filter(r=>r.orderId!==reviewTarget.id);
+    data.reviews.unshift({id:MC.uid('rev'), orderId:reviewTarget.id, restaurantId:reviewTarget.restaurantId, restaurantName:reviewTarget.restaurantName, customerName:data.customer?.name||'Cliente MenuClick', rating:selectedReviewRating, comment, photos:[...reviewPhotoDraft], createdAt:new Date().toISOString()});
+    const stats=storeReviewStats(reviewTarget.restaurantId); const store=MC.getRestaurant(data,reviewTarget.restaurantId);
+    if(store && stats.count){ store.rating=Number(stats.average.toFixed(2)); store.reviewCount=stats.count; }
+    MC.addLog(data,'Avaliação criada',`${reviewTarget.code} • ${selectedReviewRating} estrelas • ${reviewPhotoDraft.length} fotos`);
+    MC.save(data,false); MC.toast('Avaliação enviada'); closeAll(); renderAll();
   }
   function renderProfile(){
     MC.fillForm(MC.q('#profileForm'),data.customer||{});

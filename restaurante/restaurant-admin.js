@@ -95,12 +95,16 @@
     list.innerHTML=cs.map(c=>`<div class="mini-item"><div><b>${MC.text(c.code)}</b><small style="display:block;color:var(--muted);font-weight:800">${couponDesc(c)} • mín. ${MC.money(c.minOrder)}</small></div><span class="badge ${c.active?'success':'danger'}">${c.active?'Ativo':'Pausado'}</span></div>`).join('')||'<div class="empty">Nenhum cupom próprio da loja.</div>';
   }
   function renderReviews(){
-    const reviews=(data.reviews||[]).filter(r=>r.restaurantId===selectedId);
-    const reviewsList=MC.q('#reviewsList'); if(reviewsList) reviewsList.innerHTML=reviews.map(r=>`<div class="mini-item"><div><b>${'⭐'.repeat(Math.max(1,Math.min(5,r.rating||1)))}</b><small style="display:block;color:var(--muted);font-weight:800">${MC.text(r.comment||'Sem comentário')}</small></div><span>${new Date(r.createdAt).toLocaleDateString('pt-BR')}</span></div>`).join('')||'<div class="empty">Nenhuma avaliação ainda.</div>';
+    const reviews=(data.reviews||[]).filter(r=>r.restaurantId===selectedId).sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+    const avg=reviews.length?reviews.reduce((s,r)=>s+Number(r.rating||0),0)/reviews.length:0;
+    const photos=reviews.flatMap(r=>Array.isArray(r.photos)?r.photos:[]);
+    const reviewsList=MC.q('#reviewsList');
+    if(reviewsList) reviewsList.innerHTML=`<div class="metric" style="margin-bottom:12px"><span>Média de avaliações</span><strong>${avg?avg.toFixed(1):'0.0'} ⭐</strong><small>${reviews.length} avaliações • ${photos.length} fotos recebidas</small></div>${photos.length?`<div class="review-photos inline" style="margin-bottom:12px">${photos.slice(0,8).map(src=>`<img src="${attr(src)}" alt="Foto da avaliação">`).join('')}</div>`:''}${reviews.map(r=>`<div class="review-card" style="box-shadow:var(--shadow-xs)"><div class="review-card-head"><div><b>${MC.text(r.customerName||'Cliente')}</b><small>${new Date(r.createdAt).toLocaleDateString('pt-BR')}</small></div><span class="review-stars">${stars(r.rating)}</span></div><p>${MC.text(r.comment||'Sem comentário')}</p>${Array.isArray(r.photos)&&r.photos.length?`<div class="review-photos">${r.photos.slice(0,4).map(src=>`<img src="${attr(src)}" alt="Foto da avaliação">`).join('')}</div>`:''}</div>`).join('') || '<div class="empty">Nenhuma avaliação ainda.</div>'}`;
     const support=(data.support||[]).filter(s=>s.restaurantId===selectedId);
     const supportList=MC.q('#supportList'); if(supportList) supportList.innerHTML=support.map(s=>`<div class="mini-item"><div><b>Chamado ${MC.text(s.status)}</b><small style="display:block;color:var(--muted);font-weight:800">${MC.text(s.message)}</small></div><button class="btn ghost sm" data-close-ticket="${attr(s.id)}">Resolver</button></div>`).join('')||'<div class="empty">Nenhum chamado aberto.</div>';
     MC.qa('[data-close-ticket]').forEach(b=>b.addEventListener('click',()=>{ const s=data.support.find(x=>x.id===b.dataset.closeTicket); if(s)s.status='resolvido'; MC.addLog(data,'Chamado resolvido',b.dataset.closeTicket); MC.save(data,false); renderReviews(); }));
   }
+  function stars(value){ const n=Math.max(0,Math.min(5,Math.round(Number(value||0)))); return '★'.repeat(n)+'☆'.repeat(5-n); }
   function storeOrders(){ return (data.orders||[]).filter(o=>o.restaurantId===selectedId); }
   function orderMini(o){ return `<div class="mini-item"><div><b>${MC.text(o.code)} • ${MC.text(o.customer?.name||'Cliente')}</b><small style="display:block;color:var(--muted);font-weight:800">${MC.STATUS_LABELS[o.status]} • ${(o.items||[]).length} itens</small></div><strong>${MC.money(o.totals?.total)}</strong></div>`; }
   function saveStore(e){
