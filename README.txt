@@ -1,18 +1,34 @@
-MenuClick — Adicionais em Modo Fácil
+MenuClick - Apps separados
 
-Esta versão melhora o painel do restaurante.
-Agora o restaurante não precisa digitar adicionais no formato técnico.
-No cadastro de produto, existe um construtor visual com:
-- botão + Grupo
-- botão + Adicionar opção
-- modelos prontos: lanche, pizza, açaí e bebida
-- campo de preço por adicional
-- escolha obrigatória ou opcional
-- máximo de escolhas
-- prévia de como aparece no app
+Estrutura criada para funcionar como 3 sites/apps independentes:
 
-Versão com arquivos separados:
-- envie todos os arquivos da pasta juntos para o GitHub Pages.
+1) cliente/index.html
+   App público do cliente. Não mostra links para painéis administrativos.
 
-Versão standalone:
-- cada HTML abre sozinho para teste rápido no computador.
+2) restaurante/index.html
+   Painel exclusivo para donos de restaurantes. Não aparece dentro do app do cliente.
+
+3) criador/index.html
+   Painel exclusivo dos criadores/admin geral. Não aparece dentro do app do cliente nem no painel da loja.
+
+Como testar no computador:
+- Abra cada pasta separadamente e clique no index.html correspondente.
+
+Como publicar no GitHub Pages:
+Opção A - Um repositório com 3 pastas:
+- /cliente
+- /restaurante
+- /criador
+
+Exemplos de links:
+- seusite.github.io/MenuClick/cliente/
+- seusite.github.io/MenuClick/restaurante/
+- seusite.github.io/MenuClick/criador/
+
+Opção B - 3 repositórios/sites separados:
+- menuclick-cliente
+- menuclick-restaurante
+- menuclick-criador
+
+Importante:
+Hoje os dados ainda são de protótipo/localStorage. Se você hospedar em domínios separados, os dados não sincronizam automaticamente entre cliente, restaurante e criador. Para virar sistema real separado, conecte os 3 apps no mesmo backend: Google Sheets + Apps Script, Firebase, Supabase ou outro banco online.
