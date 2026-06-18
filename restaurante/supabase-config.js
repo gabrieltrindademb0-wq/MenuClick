@@ -10,12 +10,12 @@ window.MENUCLICK_SUPABASE = {
   enabled: false,
 
   // Exemplo: https://abcdefghijk.supabase.co
-  url: 'db.fnlnqrwmnsxrxlxsybta.supabase.co',
+  url: db.fnlnqrwmnsxrxlxsybta.supabase.co,
 
   // Use a chave pública: publishable key ou anon public key.
   // Exemplo novo: sb_publishable_xxxxxxxxx
   // Exemplo legado: eyJhbGciOi...
-  publishableKey: 'sb_publishable_RrYJpzfvm9eXzdcTmMPFhQ_Xgrwa6R4',
+  publishableKey: sb_publishable_RrYJpzfvm9eXzdcTmMPFhQ_Xgrwa6R4,
 
   // Não altere por enquanto.
   table: 'app_state',
