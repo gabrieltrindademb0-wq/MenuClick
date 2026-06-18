@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#ff7900" />
-  <title>MenuClick Criador | Creator Studio</title>
+  <title>MenuClick Criador | Painel ADM</title>
   <link rel="stylesheet" href="shared.css" />
 </head>
 <body>
@@ -20,14 +20,14 @@
         <button data-view="coupons">Cupons</button>
         <button data-view="data">Dados</button>
       </nav>
-      <div class="top-actions"><span class="badge orange">Creator Studio</span><button class="btn secondary sm" type="button" title="Em produção">Sair</button></div>
+      <div class="top-actions"><span class="badge orange">Painel ADM</span><button class="btn secondary sm" type="button" title="Em produção">Sair</button></div>
     </div>
   </header>
 
   <main class="wide admin-shell">
     <section class="admin-hero">
-      <div><span class="badge orange">Creator Studio</span><h2>Painel para alterar o app sem programar</h2><p>Nome, cores, categorias, banners, lojas, cupons, taxas, avisos, exportação e importação dos dados.</p></div>
-      <div class="row"><button class="btn secondary" id="resetDemo">Restaurar demo</button><button class="btn" id="saveSnapshot">Exportar backup</button></div>
+      <div><span class="badge orange">Administrador</span><h2>Painel ADM</h2><p>Controle geral do MenuClick: nome, cores, categorias, banners, lojas, cupons, taxas, avisos, backup e importação dos dados.</p></div>
+      <div class="row"><button class="btn secondary" id="resetDemo">Restaurar demo</button><button class="btn" id="saveSnapshot">Baixar backup</button></div>
     </section>
 
     <section class="admin-view active" id="view-overview">
@@ -135,7 +135,7 @@
     <section class="admin-view" id="view-data">
       <div class="grid cols-2">
         <div class="card grid"><h3 style="margin-top:0">Importar dados</h3><p style="color:var(--muted);font-weight:700">Cole aqui um backup JSON exportado do MenuClick. Isso substitui os dados locais deste navegador.</p><textarea class="textarea" id="importText" style="min-height:240px"></textarea><button class="btn" id="importBackup">Importar backup</button></div>
-        <div class="card grid"><h3 style="margin-top:0">Backup atual</h3><button class="btn secondary" id="copyBackup">Copiar JSON</button><pre class="codebox" id="backupPreview"></pre></div>
+        <div class="card grid"><h3 style="margin-top:0">Backup atual</h3><p style="color:var(--muted);font-weight:700;margin:0">Baixe um arquivo .json para guardar uma cópia dos dados ou restaurar depois.</p><div class="row"><button class="btn" id="downloadBackupFile">Baixar arquivo do backup</button><button class="btn secondary" id="copyBackup">Copiar JSON</button></div><pre class="codebox" id="backupPreview"></pre></div>
       </div>
     </section>
   </main>

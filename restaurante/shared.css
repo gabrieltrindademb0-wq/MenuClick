@@ -133,3 +133,15 @@ img{max-width:100%;display:block}.hidden{display:none!important}.sr{position:abs
 .option-empty{border:1px dashed #efc49c;border-radius:18px;background:#fffaf5;padding:18px;text-align:center;color:var(--muted);font-weight:850}
 .option-help{font-size:.76rem;color:var(--muted);font-weight:800;margin-top:5px;display:block;line-height:1.35}
 @media (max-width:760px){.easy-options-head{flex-direction:column}.option-group-top,.option-row{grid-template-columns:1fr}.option-group-remove,.option-row-remove{width:100%}.option-row{padding:10px}}
+
+/* Upload de foto do produto */
+.upload-field{grid-column:1/-1}
+.upload-card{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center;border:1px dashed #ffb26b;background:linear-gradient(180deg,#fffaf5,#fff);border-radius:24px;padding:14px;box-shadow:var(--shadow-xs)}
+.upload-preview{width:132px;height:116px;border-radius:20px;background:var(--orange-soft);display:grid;place-items:center;overflow:hidden;border:1px solid #ffd8b5;color:var(--orange-700);font-size:2.2rem;font-weight:1000}
+.upload-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.upload-preview.has-image{background:#fff}
+.upload-info b{display:block;font-size:1.02rem;letter-spacing:-.03em;color:var(--text)}
+.upload-info small{display:block;color:var(--muted);font-weight:800;line-height:1.35;margin-top:4px}
+.upload-tip{color:#8a5a2d!important}.file-btn{position:relative;overflow:hidden;cursor:pointer}.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}.product-admin-item{align-items:center}.product-admin-left{display:flex;align-items:center;gap:12px}.product-thumb{width:58px;height:58px;border-radius:18px;object-fit:cover;border:1px solid #ffd8b5;background:#fff7ef;display:grid;place-items:center;flex:0 0 auto;box-shadow:var(--shadow-xs)}.product-thumb.fallback{font-size:1.7rem}
+.product-photo{object-fit:cover;overflow:hidden}.product-photo.large{width:96px!important;height:96px!important;border-radius:28px!important}.product-photo.cart{width:48px!important;height:48px!important;border-radius:16px!important;font-size:1.4rem!important}
+@media (max-width:760px){.upload-card{grid-template-columns:1fr}.upload-preview{width:100%;height:190px}.product-admin-left{align-items:flex-start}.product-admin-item{align-items:flex-start}}

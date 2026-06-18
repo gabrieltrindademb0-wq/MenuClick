@@ -101,12 +101,12 @@
   }
   function productCard(p){
     const price=p.promoPrice?`<span style="text-decoration:line-through;color:var(--muted);font-size:.82rem">${MC.money(p.price)}</span> ${MC.money(p.promoPrice)}`:MC.money(p.price);
-    return `<button class="item-card ${!p.available?'unavailable':''}" data-product="${p.id}" ${!p.available?'disabled':''}><div><h4>${MC.text(p.name)}</h4><p>${MC.text(p.description)}</p><div class="price">${price}</div><small style="color:var(--muted);font-weight:800">${MC.text(p.serves||'')} • ${MC.text(p.weight||'')}</small></div><span class="photo-bubble">${MC.text(p.emoji||'🍽️')}</span></button>`;
+    return `<button class="item-card ${!p.available?'unavailable':''}" data-product="${p.id}" ${!p.available?'disabled':''}><div><h4>${MC.text(p.name)}</h4><p>${MC.text(p.description)}</p><div class="price">${price}</div><small style="color:var(--muted);font-weight:800">${MC.text(p.serves||'')} • ${MC.text(p.weight||'')}</small></div>${productMedia(p)}</button>`;
   }
   function openProduct(id){
     currentProduct=(data.products||[]).find(p=>p.id===id); if(!currentProduct) return;
     const groups=(currentProduct.options||[]).map((g,gi)=>`<div class="card" style="box-shadow:none"><h4 style="margin:0 0 8px">${MC.text(g.group)} ${g.required?'<span class="badge danger">obrigatório</span>':''}</h4><p style="margin:0 0 10px;color:var(--muted);font-weight:700">Escolha até ${g.max||1}</p>${(g.items||[]).map((it,ii)=>`<label class="mini-item"><span>${MC.text(it.name)}</span><span class="row"><b>${it.price?MC.money(it.price):'Grátis'}</b><input type="checkbox" data-opt="${gi}" data-idx="${ii}"></span></label>`).join('')}</div>`).join('');
-    MC.q('#productDetail').innerHTML=`<div class="row between"><div><span class="badge orange">${MC.text(currentProduct.category)}</span><h3 style="margin:8px 0 4px;letter-spacing:-.05em">${MC.text(currentProduct.name)}</h3><p style="color:var(--muted);font-weight:750">${MC.text(currentProduct.description)}</p></div><span class="photo-bubble" style="width:86px;height:86px">${MC.text(currentProduct.emoji||'🍽️')}</span></div>
+    MC.q('#productDetail').innerHTML=`<div class="row between"><div><span class="badge orange">${MC.text(currentProduct.category)}</span><h3 style="margin:8px 0 4px;letter-spacing:-.05em">${MC.text(currentProduct.name)}</h3><p style="color:var(--muted);font-weight:750">${MC.text(currentProduct.description)}</p></div>${productMedia(currentProduct,'large')}</div>
     <div class="notice"><b>Alérgenos:</b> ${MC.text(currentProduct.allergens||'Não informado')} • <b>Preparo:</b> ${currentProduct.prepTime||'-'} min</div>
     <div class="grid" style="margin-top:14px">${groups}<label class="field">Observação do item<textarea class="textarea" id="productNote" placeholder="Ex.: sem cebola, molho separado..."></textarea></label><div class="form-grid"><label class="field">Quantidade<input id="productQty" class="input" type="number" value="1" min="1"></label><div class="total-box"><div class="total-line final"><span>Total item</span><strong id="productTotal">${MC.money(itemBasePrice(currentProduct))}</strong></div></div></div><button class="btn block" id="addProductBtn">Adicionar à sacola</button></div>`;
     MC.qa('[data-opt]',MC.q('#productDetail')).forEach(i=>i.addEventListener('change',()=>{ limitOptions(i); updateProductTotal(); }));
@@ -145,7 +145,7 @@
     if(!validateOptions()) return;
     if(cart.length && cart[0].restaurantId!==currentRestaurant.id){ if(!confirm('Sua sacola tem itens de outra loja. Limpar e continuar?')) return; cart=[]; }
     const opts=selectedOptions(); const qty=Math.max(1,Number(MC.q('#productQty')?.value||1));
-    cart.push({id:MC.uid('cart'), restaurantId:currentRestaurant.id, productId:currentProduct.id, name:currentProduct.name, emoji:currentProduct.emoji, price:itemBasePrice(currentProduct), qty, options:opts, note:MC.q('#productNote')?.value||''});
+    cart.push({id:MC.uid('cart'), restaurantId:currentRestaurant.id, productId:currentProduct.id, name:currentProduct.name, emoji:currentProduct.emoji, image:currentProduct.image||'', price:itemBasePrice(currentProduct), qty, options:opts, note:MC.q('#productNote')?.value||''});
     saveCart(); closeAll(); openDrawer('cartDrawer'); renderCart(); MC.toast('Item adicionado à sacola');
   }
   function saveCart(){ localStorage.setItem('menuclick_cart_v4',JSON.stringify(cart)); }
@@ -154,7 +154,7 @@
     const store=cart[0]?MC.getRestaurant(data,cart[0].restaurantId):null;
     setText('cartCount',cart.reduce((s,i)=>s+i.qty,0));
     setText('cartStoreName',store?store.name:'Nenhum restaurante selecionado.');
-    wrap.innerHTML=cart.length?cart.map(ci=>`<div class="cart-item"><span class="photo-bubble" style="width:48px;height:48px;border-radius:16px;font-size:1.4rem">${MC.text(ci.emoji||'🍽️')}</span><div><b>${MC.text(ci.name)}</b><small style="display:block;color:var(--muted);font-weight:800">${ci.options?.map(o=>o.name).join(', ')||'Sem adicionais'}${ci.note?` • ${MC.text(ci.note)}`:''}</small><div class="price">${MC.money((ci.price+(ci.options||[]).reduce((s,o)=>s+o.price,0))*ci.qty)}</div></div><div class="qty"><button data-dec="${ci.id}">−</button><b>${ci.qty}</b><button data-inc="${ci.id}">+</button></div></div>`):'<div class="empty">Sua sacola está vazia.</div>';
+    wrap.innerHTML=cart.length?cart.map(ci=>`<div class="cart-item">${cartMedia(ci)}<div><b>${MC.text(ci.name)}</b><small style="display:block;color:var(--muted);font-weight:800">${ci.options?.map(o=>o.name).join(', ')||'Sem adicionais'}${ci.note?` • ${MC.text(ci.note)}`:''}</small><div class="price">${MC.money((ci.price+(ci.options||[]).reduce((s,o)=>s+o.price,0))*ci.qty)}</div></div><div class="qty"><button data-dec="${ci.id}">−</button><b>${ci.qty}</b><button data-inc="${ci.id}">+</button></div></div>`):'<div class="empty">Sua sacola está vazia.</div>';
     MC.qa('[data-inc]',wrap).forEach(b=>b.addEventListener('click',()=>{const it=cart.find(i=>i.id===b.dataset.inc); if(it) it.qty++; saveCart(); renderCart();}));
     MC.qa('[data-dec]',wrap).forEach(b=>b.addEventListener('click',()=>{const it=cart.find(i=>i.id===b.dataset.dec); if(it){it.qty--; if(it.qty<=0) cart=cart.filter(x=>x.id!==it.id);} saveCart(); renderCart();}));
     renderTotals(store);
@@ -234,6 +234,16 @@
   function addPayment(){ const label=prompt('Nome da forma de pagamento:','Cartão final 1234'); if(!label) return; data.payments.push({id:MC.uid('pay'),type:'custom',label,masked:label,active:true}); MC.save(data); renderProfile(); }
   function deleteLocalData(){ if(confirm('Isso apagará perfil, endereços, pedidos e pagamentos locais. Continuar?')){ data.customer=MC.clone(MC.DEFAULT_DATA.customer); data.addresses=MC.clone(MC.DEFAULT_DATA.addresses); data.payments=MC.clone(MC.DEFAULT_DATA.payments); data.orders=[]; cart=[]; saveCart(); MC.save(data); renderAll(); closeAll(); MC.toast('Dados locais apagados'); } }
   function toggleFavorite(id){ data.customer.favorites=data.customer.favorites||[]; const i=data.customer.favorites.indexOf(id); if(i>=0)data.customer.favorites.splice(i,1); else data.customer.favorites.push(id); MC.save(data); renderRestaurants(); }
+  function productMedia(p,variant=''){
+    const cls=variant==='large' ? 'photo-bubble product-photo large' : 'photo-bubble product-photo';
+    if(p.image) return `<img class="${cls}" src="${attr(p.image)}" alt="${MC.text(p.name)}">`;
+    return `<span class="${cls}">${MC.text(p.emoji||'🍽️')}</span>`;
+  }
+  function cartMedia(item){
+    if(item.image) return `<img class="photo-bubble product-photo cart" src="${attr(item.image)}" alt="${MC.text(item.name)}">`;
+    return `<span class="photo-bubble product-photo cart">${MC.text(item.emoji||'🍽️')}</span>`;
+  }
+  function attr(v){ return String(v ?? '').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m])); }
   function labelPayment(k){ return ({pix:'Pix',credit:'Crédito',debit:'Débito',cash:'Dinheiro',vr:'Vale-refeição',wallet:'Carteira'})[k]||k; }
   function openDrawer(id){ MC.q('#'+id)?.classList.add('open'); renderCart(); }
   function openModal(id){ MC.q('#'+id)?.classList.add('open'); }

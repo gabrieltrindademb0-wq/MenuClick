@@ -35,7 +35,9 @@
     MC.q('#storeForm')?.addEventListener('submit',saveStore);
     MC.q('#productForm')?.addEventListener('submit',saveProduct);
     MC.q('#couponForm')?.addEventListener('submit',saveCoupon);
-    MC.q('#clearProduct')?.addEventListener('click',()=>{ MC.fillForm(MC.q('#productForm'),{available:true}); setOptionsBuilder([]); MC.q('#productForm')?.reset(); MC.q('#productForm').elements.available.checked=true; });
+    MC.q('#clearProduct')?.addEventListener('click',()=>{ MC.q('#productForm')?.reset(); MC.q('#productForm').elements.available.checked=true; setProductImage(''); setOptionsBuilder([]); });
+    MC.q('#productImageFile')?.addEventListener('change',handleProductImage);
+    MC.q('#removeProductImage')?.addEventListener('click',()=>setProductImage(''));
     MC.q('#addOptionGroup')?.addEventListener('click',()=>addGroup());
     MC.q('#clearOptionsBuilder')?.addEventListener('click',()=>setOptionsBuilder([]));
     MC.qa('[data-option-template]').forEach(btn=>btn.addEventListener('click',()=>applyTemplate(btn.dataset.optionTemplate)));
@@ -76,7 +78,7 @@
   function renderProducts(){
     const list=MC.q('#productsList'); if(!list) return;
     const ps=MC.getProducts(data,selectedId);
-    list.innerHTML=ps.map(p=>`<div class="mini-item"><div><b>${MC.text(p.emoji||'🍽️')} ${MC.text(p.name)}</b><small style="display:block;color:var(--muted);font-weight:800">${MC.text(p.category)} • ${p.available?'Disponível':'Pausado'} • Estoque ${p.stock??'-'} • ${(p.options||[]).length} grupos de opções</small></div><div class="row"><b>${MC.money(p.promoPrice||p.price)}</b><button class="btn ghost sm" data-edit-product="${attr(p.id)}">Editar</button><button class="btn danger sm" data-delete-product="${attr(p.id)}">Excluir</button></div></div>`).join('')||'<div class="empty">Cadastre produtos para aparecerem no app.</div>';
+    list.innerHTML=ps.map(p=>`<div class="mini-item product-admin-item"><div class="product-admin-left">${productThumb(p)}<div><b>${MC.text(p.name)}</b><small style="display:block;color:var(--muted);font-weight:800">${MC.text(p.category)} • ${p.available?'Disponível':'Pausado'} • Estoque ${p.stock??'-'} • ${(p.options||[]).length} grupos de opções</small></div></div><div class="row"><b>${MC.money(p.promoPrice||p.price)}</b><button class="btn ghost sm" data-edit-product="${attr(p.id)}">Editar</button><button class="btn danger sm" data-delete-product="${attr(p.id)}">Excluir</button></div></div>`).join('')||'<div class="empty">Cadastre produtos para aparecerem no app.</div>';
     MC.qa('[data-edit-product]',list).forEach(b=>b.addEventListener('click',()=>editProduct(b.dataset.editProduct)));
     MC.qa('[data-delete-product]',list).forEach(b=>b.addEventListener('click',()=>deleteProduct(b.dataset.deleteProduct)));
   }
@@ -112,13 +114,14 @@
     e.preventDefault();
     const options=collectOptionsBuilder(true); if(!options) return;
     const o=MC.formToObj(e.currentTarget);
-    const p={id:o.id||MC.uid('prod'), restaurantId:selectedId, name:o.name, category:o.category, emoji:o.emoji||'🍽️', price:Number(o.price||0), promoPrice:Number(o.promoPrice||0), stock:Number(o.stock||0), serves:o.serves, weight:o.weight, description:o.description, allergens:o.allergens, nutrition:o.nutrition, prepTime:Number(o.prepTime||0), options, available:!!o.available, featured:!!o.featured};
+    const p={id:o.id||MC.uid('prod'), restaurantId:selectedId, name:o.name, category:o.category, emoji:o.emoji||'🍽️', image:o.image||'', price:Number(o.price||0), promoPrice:Number(o.promoPrice||0), stock:Number(o.stock||0), serves:o.serves, weight:o.weight, description:o.description, allergens:o.allergens, nutrition:o.nutrition, prepTime:Number(o.prepTime||0), options, available:!!o.available, featured:!!o.featured};
     const idx=data.products.findIndex(x=>x.id===p.id); if(idx>=0)data.products[idx]=p; else data.products.push(p);
-    MC.addLog(data,'Produto salvo',p.name); MC.save(data,false); MC.toast('Produto salvo'); e.currentTarget.reset(); e.currentTarget.elements.available.checked=true; setOptionsBuilder([]); renderProducts(); renderDashboard();
+    MC.addLog(data,'Produto salvo',p.name); MC.save(data,false); MC.toast('Produto salvo'); e.currentTarget.reset(); e.currentTarget.elements.available.checked=true; setProductImage(''); setOptionsBuilder([]); renderProducts(); renderDashboard();
   }
   function editProduct(id){
     const p=data.products.find(x=>x.id===id); if(!p)return;
     MC.fillForm(MC.q('#productForm'),Object.assign({},p,{optionsRaw:MC.optionsToRaw(p.options)}));
+    setProductImage(p.image||'');
     setOptionsBuilder(p.options||[]); MC.setActiveView('products');
     MC.q('#productForm')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
@@ -130,6 +133,64 @@
   function updateOrderStatus(id,status){ const o=data.orders.find(x=>x.id===id); if(!o)return; o.status=status; o.updatedAt=new Date().toISOString(); MC.addLog(data,'Status atualizado',`${o.code}: ${MC.STATUS_LABELS[status]}`); MC.save(data,false); renderDashboard(); }
   function orderDetails(id){ const o=data.orders.find(x=>x.id===id); if(!o)return 'Pedido não encontrado'; return `${o.code}\nCliente: ${o.customer?.name||''}\nTelefone: ${o.customer?.phone||''}\nEndereço: ${o.address?.street||''}, ${o.address?.number||''}\nItens:\n${(o.items||[]).map(i=>`- ${i.qty}x ${i.name}`).join('\n')}\nTotal: ${MC.money(o.totals?.total)}\nObs: ${o.note||''}`; }
   function couponDesc(c){ if(c.type==='fixed') return `${MC.money(c.value)} de desconto`; if(c.type==='percent') return `${c.value}% de desconto`; return 'Frete grátis'; }
+
+
+  /* Upload visual da foto do produto */
+  function handleProductImage(e){
+    const file=e.target.files && e.target.files[0];
+    if(!file) return;
+    if(!/^image\/(png|jpeg|webp)$/.test(file.type)){
+      MC.toast('Use imagem JPG, PNG ou WEBP.');
+      e.target.value='';
+      return;
+    }
+    if(file.size > 8 * 1024 * 1024){
+      MC.toast('Imagem muito pesada. Use até 8MB.');
+      e.target.value='';
+      return;
+    }
+    resizeImage(file, 900, 0.82).then(src=>{
+      setProductImage(src);
+      MC.toast('Foto carregada');
+    }).catch(()=>MC.toast('Não foi possível carregar a foto.'));
+  }
+  function resizeImage(file,maxSize,quality){
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onerror=reject;
+      reader.onload=()=>{
+        const img=new Image();
+        img.onerror=reject;
+        img.onload=()=>{
+          const scale=Math.min(1, maxSize / Math.max(img.width,img.height));
+          const w=Math.max(1,Math.round(img.width*scale));
+          const h=Math.max(1,Math.round(img.height*scale));
+          const canvas=document.createElement('canvas');
+          canvas.width=w; canvas.height=h;
+          const ctx=canvas.getContext('2d');
+          ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+          ctx.drawImage(img,0,0,w,h);
+          resolve(canvas.toDataURL('image/jpeg',quality));
+        };
+        img.src=reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function setProductImage(src){
+    const input=MC.q('[name="image"]');
+    const file=MC.q('#productImageFile');
+    const preview=MC.q('#productImagePreview');
+    if(input) input.value=src||'';
+    if(file && !src) file.value='';
+    if(preview){
+      preview.innerHTML=src ? `<img src="${attr(src)}" alt="Prévia do produto">` : '<span>📷</span>';
+      preview.classList.toggle('has-image',!!src);
+    }
+  }
+  function productThumb(p){
+    return p.image ? `<img class="product-thumb" src="${attr(p.image)}" alt="${MC.text(p.name)}">` : `<span class="product-thumb fallback">${MC.text(p.emoji||'🍽️')}</span>`;
+  }
 
   /* Builder visual de adicionais */
   function setOptionsBuilder(options){

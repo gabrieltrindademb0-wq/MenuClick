@@ -15,6 +15,7 @@
     MC.q('#globalCouponForm')?.addEventListener('submit',saveCoupon);
     MC.q('#resetDemo')?.addEventListener('click',resetDemo);
     MC.q('#saveSnapshot')?.addEventListener('click',exportBackup);
+    MC.q('#downloadBackupFile')?.addEventListener('click',exportBackup);
     MC.q('#copyBackup')?.addEventListener('click',copyBackup);
     MC.q('#importBackup')?.addEventListener('click',importBackup);
     MC.q('#clearLogs')?.addEventListener('click',()=>{data.logs=[]; MC.save(data,false); renderLogs();});
@@ -103,7 +104,11 @@
   }
   function deleteCoupon(id){ if(!confirm('Excluir cupom?'))return; const c=data.coupons.find(x=>x.id===id); data.coupons=data.coupons.filter(x=>x.id!==id); MC.addLog(data,'Cupom excluído',c?.code||id); MC.save(data,false); renderCoupons(); }
   function resetDemo(){ if(!confirm('Restaurar dados demo? Isso substituirá dados locais deste navegador.'))return; data=MC.reset(); MC.addLog(data,'Demo restaurada','MenuClick UI Pro'); MC.toast('Demo restaurada'); renderAll(); }
-  function exportBackup(){ MC.downloadJSON('backup-menuclick-completo.json',data); }
+  function exportBackup(){
+    const dataHoje=new Date().toISOString().slice(0,10);
+    MC.downloadJSON(`backup-menuclick-${dataHoje}.json`,data);
+    MC.toast('Backup baixado em arquivo JSON');
+  }
   async function copyBackup(){ try{ await navigator.clipboard.writeText(JSON.stringify(data,null,2)); MC.toast('Backup copiado'); } catch(e){ MC.q('#backupPreview').select?.(); MC.toast('Copie manualmente o JSON'); } }
   function importBackup(){ const raw=MC.q('#importText')?.value; if(!raw)return MC.toast('Cole o JSON primeiro.'); try{ const parsed=JSON.parse(raw); localStorage.setItem(MC.KEY,JSON.stringify(parsed)); data=MC.load(); MC.addLog(data,'Backup importado','Painel dos criadores'); MC.save(data,false); MC.toast('Backup importado'); renderAll(); }catch(e){ MC.toast('JSON inválido.'); } }
   function descCoupon(c){ if(c.type==='fixed') return `${MC.money(c.value)} de desconto`; if(c.type==='percent') return `${c.value}% de desconto`; return 'Frete grátis'; }

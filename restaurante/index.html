@@ -97,8 +97,23 @@
           <div class="form-grid">
             <label class="field">Nome<input name="name" class="input" required /></label>
             <label class="field">Categoria<input name="category" class="input" required /></label>
-            <label class="field">Emoji/foto simples<input name="emoji" class="input" placeholder="🍔" /></label>
+            <label class="field">Emoji/ícone de apoio<input name="emoji" class="input" placeholder="🍔" /></label>
             <label class="field">Preço<input name="price" class="input" type="number" step="0.01" required /></label>
+            <div class="field full upload-field">
+              <div class="upload-card" id="productImageDrop">
+                <div class="upload-preview" id="productImagePreview"><span>📷</span></div>
+                <div class="upload-info">
+                  <b>Foto do produto</b>
+                  <small>Carregue uma imagem JPG, PNG ou WEBP. O app reduz automaticamente para ficar leve.</small>
+                  <div class="row" style="margin-top:10px">
+                    <label class="btn secondary sm file-btn">Escolher imagem<input id="productImageFile" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+                    <button class="btn ghost sm" type="button" id="removeProductImage">Remover foto</button>
+                  </div>
+                  <small class="upload-tip">Dica: use foto quadrada ou horizontal, bem iluminada, sem texto pequeno.</small>
+                </div>
+              </div>
+              <input type="hidden" name="image" />
+            </div>
             <label class="field">Preço promocional<input name="promoPrice" class="input" type="number" step="0.01" /></label>
             <label class="field">Estoque<input name="stock" class="input" type="number" /></label>
             <label class="field">Serve<input name="serves" class="input" /></label>
