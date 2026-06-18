@@ -72,6 +72,7 @@
   function save(data,log=true){
     if(log && data && data.customer) data.customer.lastAccess=new Date().toISOString();
     localStorage.setItem(KEY, JSON.stringify(data));
+    queueCloudSave(data);
     return data;
   }
   function reset(){ localStorage.removeItem(KEY); const d=clone(DEFAULT_DATA); save(d,false); return d; }
@@ -139,5 +140,95 @@
     const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
     const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   }
-  window.MC={KEY, DEFAULT_DATA, STATUS_LABELS, STATUS_STEPS, STORE_STATUSES, clone, load, save, reset, uid, money, onlyNumber, text, slug, q, qa, formToObj, fillForm, addLog, toast, setActiveView, applyBrand, getRestaurant, getProducts, activeCategories, activeCoupons, parseList, parseOptions, optionsToRaw, downloadJSON};
+
+  /* ==========================
+     MenuClick + Supabase
+     Modo iniciante: sincroniza o estado do app inteiro na tabela public.app_state.
+     Mantém localStorage como cache, então o app continua abrindo mesmo sem internet.
+     ========================== */
+  let cloudClient=null, cloudSaveTimer=null, cloudBusy=false, cloudLastError='';
+  function cloudConfig(){
+    const c=window.MENUCLICK_SUPABASE || {};
+    return {
+      enabled: c.enabled === true,
+      url: String(c.url||'').trim(),
+      publishableKey: String(c.publishableKey||c.anonKey||'').trim(),
+      table: String(c.table||'app_state').trim(),
+      rowId: String(c.rowId||'menuclick-main').trim()
+    };
+  }
+  function cloudReady(){
+    const c=cloudConfig();
+    return !!(c.enabled && c.url.startsWith('https://') && c.publishableKey && !c.url.includes('COLE_AQUI') && !c.publishableKey.includes('COLE_AQUI') && window.supabase && window.supabase.createClient);
+  }
+  function cloudStatus(){ return { enabled: cloudReady(), configured: cloudConfig().enabled, lastError: cloudLastError }; }
+  function getCloudClient(){
+    if(!cloudReady()) return null;
+    if(!cloudClient){ const c=cloudConfig(); cloudClient=window.supabase.createClient(c.url,c.publishableKey); }
+    return cloudClient;
+  }
+  function isEmptyState(obj){ return !obj || (typeof obj==='object' && !Array.isArray(obj) && Object.keys(obj).length===0); }
+  function queueCloudSave(data){
+    if(cloudBusy || !cloudReady()) return;
+    clearTimeout(cloudSaveTimer);
+    cloudSaveTimer=setTimeout(()=>cloudPush(data,{silent:true}),700);
+  }
+  async function cloudPush(data,{silent=false}={}){
+    const client=getCloudClient(); if(!client) return false;
+    const c=cloudConfig();
+    try{
+      const payload=normalize(clone(data||load()));
+      const { error } = await client.from(c.table).upsert({ id:c.rowId, data:payload, updated_at:new Date().toISOString() });
+      if(error) throw error;
+      cloudLastError='';
+      if(!silent) toast('Dados enviados para o Supabase.');
+      return true;
+    }catch(err){
+      cloudLastError=err?.message || String(err);
+      console.error('MenuClick Supabase upload:',err);
+      if(!silent) toast('Erro ao enviar para o Supabase. Veja o console.');
+      return false;
+    }
+  }
+  async function cloudPull({silent=false,reload=true}={}){
+    const client=getCloudClient(); if(!client) return null;
+    const c=cloudConfig();
+    try{
+      const { data:row, error } = await client.from(c.table).select('data,updated_at').eq('id',c.rowId).maybeSingle();
+      if(error) throw error;
+      if(!row || isEmptyState(row.data)){
+        await cloudPush(load(),{silent:true});
+        if(!silent) toast('Primeira sincronização criada no Supabase.');
+        return load();
+      }
+      const remote=normalize(row.data);
+      const remoteRaw=JSON.stringify(remote);
+      const localRaw=localStorage.getItem(KEY)||'';
+      if(remoteRaw !== localRaw){
+        cloudBusy=true;
+        localStorage.setItem(KEY,remoteRaw);
+        cloudBusy=false;
+        window.dispatchEvent(new CustomEvent('menuclick:cloud-sync',{detail:remote}));
+        if(!silent) toast('Dados atualizados pelo Supabase.');
+        if(reload) setTimeout(()=>location.reload(),250);
+      }
+      cloudLastError='';
+      return remote;
+    }catch(err){
+      cloudBusy=false;
+      cloudLastError=err?.message || String(err);
+      console.error('MenuClick Supabase download:',err);
+      if(!silent) toast('Erro ao buscar dados do Supabase. Veja o console.');
+      return null;
+    }
+  }
+  function initCloudSync(){
+    if(!cloudReady()) return;
+    cloudPull({silent:true,reload:true});
+    // Verifica alterações feitas por outro painel/celular a cada 20 segundos.
+    setInterval(()=>cloudPull({silent:true,reload:true}),20000);
+  }
+  setTimeout(initCloudSync,900);
+
+  window.MC={KEY, DEFAULT_DATA, STATUS_LABELS, STATUS_STEPS, STORE_STATUSES, clone, load, save, reset, uid, money, onlyNumber, text, slug, q, qa, formToObj, fillForm, addLog, toast, setActiveView, applyBrand, getRestaurant, getProducts, activeCategories, activeCoupons, parseList, parseOptions, optionsToRaw, downloadJSON, cloudConfig, cloudReady, cloudStatus, cloudPush, cloudPull, initCloudSync};
 })();
