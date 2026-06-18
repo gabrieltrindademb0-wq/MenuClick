@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#ff7900" />
+  <title>MenuClick | App do Cliente</title>
+  <link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="index.html">
+        <div class="logo">MC</div>
+        <div><h1>MenuClick</h1><p>cliente • delivery • pedidos</p></div>
+      </a>
+      <nav class="nav">
+        <a class="active" href="#inicio">Início</a>
+        <a href="#restaurantes">Restaurantes</a>
+        <a href="#pedidos">Pedidos</a>
+        <button data-open-profile>Perfil</button>
+        <a href="restaurante-admin.html">Restaurante ADM</a>
+        <a href="criador-admin.html">Criador ADM</a>
+      </nav>
+      <div class="top-actions">
+        <button class="pill orange" data-open-address>📍 <span id="topAddress">Endereço</span></button>
+        <button class="icon-btn" data-open-cart aria-label="Abrir carrinho">🛒 <span class="count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell" id="inicio">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <p class="eyebrow">MenuClick Pro</p>
+          <h2>Seu delivery com cara de app grande.</h2>
+          <p>Busca inteligente, restaurantes, cupons, carrinho completo, endereços, pagamento simulado, rastreamento, suporte e avaliações.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#restaurantes">Ver restaurantes</a>
+            <button class="btn secondary" data-open-profile>Completar cadastro</button>
+          </div>
+          <div class="stat-grid">
+            <div class="stat"><strong id="statStores">0</strong><span>lojas ativas</span></div>
+            <div class="stat"><strong id="statCats">0</strong><span>categorias</span></div>
+            <div class="stat"><strong id="statOrders">0</strong><span>pedidos salvos</span></div>
+          </div>
+        </div>
+        <div class="hero-card search-card">
+          <div class="row between">
+            <div>
+              <p class="eyebrow">Buscar agora</p>
+              <h3 style="margin:0;font-size:1.45rem;letter-spacing:-.05em">O que você quer pedir?</h3>
+            </div>
+            <span class="badge orange">⚡ rápido</span>
+          </div>
+          <label class="field full">
+            Busca
+            <div class="input-wrap"><span>🔎</span><input id="searchInput" class="input icon" placeholder="Busque por prato, restaurante ou categoria" /></div>
+          </label>
+          <div class="form-grid">
+            <label class="field">Ordenar por
+              <select id="sortSelect" class="select">
+                <option value="recommended">Recomendados</option>
+                <option value="deliveryTime">Menor tempo</option>
+                <option value="deliveryFee">Menor entrega</option>
+                <option value="rating">Melhor avaliação</option>
+                <option value="minOrder">Menor pedido mínimo</option>
+              </select>
+            </label>
+            <label class="field">Filtro
+              <select id="quickFilter" class="select">
+                <option value="all">Todos</option>
+                <option value="open">Abertos agora</option>
+                <option value="free">Entrega grátis</option>
+                <option value="coupon">Com cupom</option>
+                <option value="super">Super lojas</option>
+              </select>
+            </label>
+          </div>
+          <div class="notice" id="noticeBox">Configure avisos no painel dos criadores.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="category-strip" id="categoryStrip"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container banner-grid" id="bannerGrid"></div>
+    </section>
+
+    <section class="section" id="restaurantes">
+      <div class="container">
+        <div class="section-head">
+          <div><h3>Restaurantes e lojas</h3><p>Cards com dados completos de entrega, avaliação, horário, selo e pagamento.</p></div>
+          <div class="row"><button class="btn secondary sm" data-open-address>Gerenciar endereços</button></div>
+        </div>
+        <div class="filters" id="activeFilters"></div>
+        <div class="restaurant-grid" id="restaurantGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="pedidos">
+      <div class="container">
+        <div class="section-head">
+          <div><h3>Meus pedidos</h3><p>Histórico com status, rastreamento, suporte e avaliação.</p></div>
+          <button class="btn ghost sm" id="exportMyData">Exportar meus dados</button>
+        </div>
+        <div class="grid cols-2" id="ordersGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="mobile-bottom">
+    <a href="#inicio" class="active"><b>🏠</b>Início</a>
+    <a href="#restaurantes"><b>🍽️</b>Lojas</a>
+    <button data-open-cart><b>🛒</b>Carrinho</button>
+    <button data-open-profile><b>👤</b>Perfil</button>
+  </nav>
+
+  <div class="drawer" id="cartDrawer">
+    <div class="overlay" data-close></div>
+    <aside class="drawer-panel">
+      <button class="close-x" data-close>×</button>
+      <h2 style="margin:0 0 4px;letter-spacing:-.05em">Sacola</h2>
+      <p style="margin:0 0 16px;color:var(--muted);font-weight:700" id="cartStoreName">Nenhum restaurante selecionado.</p>
+      <div id="cartItems"></div>
+      <div class="grid" style="margin-top:14px">
+        <div class="form-grid">
+          <label class="field">Cupom
+            <input class="input" id="couponInput" placeholder="MENU10" />
+          </label>
+          <label class="field">Gorjeta
+            <input class="input" id="tipInput" type="number" min="0" step="1" placeholder="0" />
+          </label>
+        </div>
+        <div class="form-grid">
+          <label class="field">Entrega/retirada
+            <select id="modeInput" class="select">
+              <option value="delivery">Receber em casa</option>
+              <option value="pickup">Retirar no local</option>
+            </select>
+          </label>
+          <label class="field">Agendar
+            <input id="scheduleInput" class="input" type="datetime-local" />
+          </label>
+        </div>
+        <div class="form-grid">
+          <label class="field">Pagamento
+            <select id="paymentInput" class="select">
+              <option value="pix">Pix</option>
+              <option value="credit">Cartão de crédito</option>
+              <option value="debit">Cartão de débito</option>
+              <option value="cash">Dinheiro</option>
+              <option value="vr">Vale-refeição</option>
+              <option value="wallet">Carteira digital</option>
+            </select>
+          </label>
+          <label class="field">Troco para
+            <input id="changeInput" class="input" placeholder="Ex.: 100,00" />
+          </label>
+        </div>
+        <label class="field">CPF na nota
+          <input id="cpfNotaInput" class="input" placeholder="000.000.000-00" />
+        </label>
+        <label class="field">Observação do pedido
+          <textarea id="orderNoteInput" class="textarea" placeholder="Ex.: entregar na portaria, sem contato..."></textarea>
+        </label>
+        <div class="total-box" id="totalsBox"></div>
+        <button class="btn block" id="checkoutBtn">Finalizar pedido</button>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal" id="restaurantModal">
+    <div class="overlay" data-close></div>
+    <section class="modal-panel large">
+      <button class="close-x" data-close>×</button>
+      <div id="restaurantDetail"></div>
+    </section>
+  </div>
+
+  <div class="modal" id="productModal">
+    <div class="overlay" data-close></div>
+    <section class="modal-panel">
+      <button class="close-x" data-close>×</button>
+      <div id="productDetail"></div>
+    </section>
+  </div>
+
+  <div class="modal" id="profileModal">
+    <div class="overlay" data-close></div>
+    <section class="modal-panel large">
+      <button class="close-x" data-close>×</button>
+      <div class="section-head"><div><h3>Perfil e privacidade</h3><p>Cadastro completo do cliente, preferências e LGPD.</p></div></div>
+      <form id="profileForm" class="grid">
+        <div class="form-grid three">
+          <label class="field">Nome completo<input name="name" class="input" required /></label>
+          <label class="field">E-mail<input name="email" class="input" type="email" /></label>
+          <label class="field">Telefone/WhatsApp<input name="phone" class="input" /></label>
+          <label class="field">CPF<input name="cpf" class="input" /></label>
+          <label class="field">Nascimento<input name="birthDate" class="input" type="date" /></label>
+          <label class="field">Preferência de contato<select name="contactPreference" class="select"><option value="whatsapp">WhatsApp</option><option value="email">E-mail</option><option value="sms">SMS</option><option value="push">Push</option></select></label>
+        </div>
+        <div class="soft">
+          <div class="row">
+            <label class="switch"><input name="marketing" type="checkbox" /> Receber promoções</label>
+            <label class="switch"><input name="push" type="checkbox" /> Push notification</label>
+            <label class="switch"><input name="sms" type="checkbox" /> SMS</label>
+            <label class="switch"><input name="termsAccepted" type="checkbox" /> Aceito termos e política</label>
+          </div>
+        </div>
+        <div class="row"><button class="btn" type="submit">Salvar perfil</button><button class="btn danger" type="button" id="deleteAccount">Excluir dados locais</button></div>
+      </form>
+      <hr style="border:0;border-top:1px solid var(--line);margin:22px 0" />
+      <div class="section-head"><div><h3>Formas de pagamento salvas</h3><p>Simulação segura: não armazene número completo do cartão em HTML.</p></div><button class="btn secondary sm" id="addPayment">Adicionar forma</button></div>
+      <div id="paymentsList" class="grid cols-2"></div>
+    </section>
+  </div>
+
+  <div class="modal" id="addressModal">
+    <div class="overlay" data-close></div>
+    <section class="modal-panel large">
+      <button class="close-x" data-close>×</button>
+      <div class="section-head"><div><h3>Endereços de entrega</h3><p>CEP, rua, número, bairro, referência, instruções e GPS.</p></div><button class="btn secondary sm" id="useGps">Usar GPS</button></div>
+      <form id="addressForm" class="grid">
+        <input type="hidden" name="id" />
+        <div class="form-grid three">
+          <label class="field">Nome do endereço<input name="label" class="input" placeholder="Casa, trabalho..." /></label>
+          <label class="field">Tipo<select name="type" class="select"><option value="casa">Casa</option><option value="trabalho">Trabalho</option><option value="academia">Academia</option><option value="outro">Outro</option></select></label>
+          <label class="field">CEP<input name="cep" class="input" /></label>
+          <label class="field">Rua<input name="street" class="input" /></label>
+          <label class="field">Número<input name="number" class="input" /></label>
+          <label class="field">Complemento<input name="complement" class="input" /></label>
+          <label class="field">Bairro<input name="neighborhood" class="input" /></label>
+          <label class="field">Cidade<input name="city" class="input" /></label>
+          <label class="field">Estado<input name="state" class="input" /></label>
+          <label class="field full">Referência<input name="reference" class="input" placeholder="Perto de..." /></label>
+          <label class="field full">Instruções<textarea name="instructions" class="textarea"></textarea></label>
+          <label class="field">Latitude<input name="lat" class="input" /></label>
+          <label class="field">Longitude<input name="lng" class="input" /></label>
+          <label class="switch"><input name="isDefault" type="checkbox" /> Tornar padrão</label>
+        </div>
+        <button class="btn" type="submit">Salvar endereço</button>
+      </form>
+      <div id="addressesList" class="grid cols-2" style="margin-top:18px"></div>
+    </section>
+  </div>
+
+  <div class="modal" id="orderModal">
+    <div class="overlay" data-close></div>
+    <section class="modal-panel">
+      <button class="close-x" data-close>×</button>
+      <div id="orderDetail"></div>
+    </section>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="customer.js"></script>
+</body>
+</html>

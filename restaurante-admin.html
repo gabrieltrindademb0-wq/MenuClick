@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#ff7900" />
+  <title>MenuClick | Painel do Restaurante</title>
+  <link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="index.html"><div class="logo">MC</div><div><h1>MenuClick</h1><p>painel do restaurante</p></div></a>
+      <nav class="nav">
+        <button class="active" data-view="dashboard">Visão geral</button>
+        <button data-view="profile">Loja</button>
+        <button data-view="products">Cardápio</button>
+        <button data-view="orders">Pedidos</button>
+        <button data-view="coupons">Cupons</button>
+        <button data-view="reviews">Avaliações</button>
+      </nav>
+      <div class="top-actions"><a class="btn secondary sm" href="criador-admin.html">Criador ADM</a><a class="btn sm" href="index.html">App cliente</a></div>
+    </div>
+  </header>
+
+  <main class="wide admin-shell">
+    <section class="admin-hero">
+      <div><span class="badge orange">Restaurante ADM</span><h2 id="adminTitle">Painel da loja</h2><p>Controle de loja, cardápio, pedidos, cupons, status, entrega e avaliações.</p></div>
+      <label class="field" style="min-width:260px">Selecionar loja
+        <select class="select" id="restaurantSelect"></select>
+      </label>
+    </section>
+
+    <section class="admin-view active" id="view-dashboard">
+      <div class="dashboard-grid" id="dashboardMetrics"></div>
+      <div class="grid cols-2" style="margin-top:16px">
+        <div class="card"><div class="section-head"><div><h3>Pedidos recentes</h3><p>Atualize o status direto pelo painel.</p></div></div><div id="recentOrders" class="mini-list"></div></div>
+        <div class="card"><div class="section-head"><div><h3>Checklist profissional</h3><p>Dados que precisam estar completos para a loja ficar confiável.</p></div></div><div id="storeChecklist" class="mini-list"></div></div>
+      </div>
+    </section>
+
+    <section class="admin-view" id="view-profile">
+      <form id="storeForm" class="card grid">
+        <div class="section-head"><div><h3>Dados da loja</h3><p>CNPJ, horário, endereço, taxa, raio e formas de pagamento.</p></div><button class="btn" type="submit">Salvar loja</button></div>
+        <div class="form-grid three">
+          <label class="field">Nome fantasia<input name="name" class="input" /></label>
+          <label class="field">Razão social<input name="legalName" class="input" /></label>
+          <label class="field">CNPJ<input name="cnpj" class="input" /></label>
+          <label class="field">E-mail do dono<input name="ownerEmail" class="input" /></label>
+          <label class="field">Categoria<select name="category" class="select" id="categorySelect"></select></label>
+          <label class="field">Emoji capa<input name="coverEmoji" class="input" placeholder="🍔" /></label>
+          <label class="field full">Descrição<input name="description" class="input" /></label>
+          <label class="field">Pedido mínimo<input name="minOrder" class="input" type="number" step="0.01" /></label>
+          <label class="field">Taxa de entrega<input name="deliveryFee" class="input" type="number" step="0.01" /></label>
+          <label class="field">Grátis acima de<input name="freeDeliveryFrom" class="input" type="number" step="0.01" /></label>
+          <label class="field">Tempo entrega/min<input name="deliveryTime" class="input" type="number" /></label>
+          <label class="field">Tempo preparo/min<input name="preparationTime" class="input" type="number" /></label>
+          <label class="field">Raio de entrega/km<input name="deliveryRadiusKm" class="input" type="number" step="0.1" /></label>
+          <label class="field">Rua<input name="street" class="input" /></label>
+          <label class="field">Número<input name="number" class="input" /></label>
+          <label class="field">Bairro<input name="neighborhood" class="input" /></label>
+          <label class="field">Cidade<input name="city" class="input" /></label>
+          <label class="field">Estado<input name="state" class="input" /></label>
+          <label class="field">CEP<input name="cep" class="input" /></label>
+          <label class="field full">Tags separadas por vírgula<input name="tags" class="input" /></label>
+          <label class="field full">Subcategorias separadas por vírgula<input name="subcategories" class="input" /></label>
+        </div>
+        <div class="soft"><b>Formas de pagamento aceitas</b><div class="row" style="margin-top:10px">
+          <label class="switch"><input name="pix" type="checkbox" /> Pix</label>
+          <label class="switch"><input name="credit" type="checkbox" /> Crédito</label>
+          <label class="switch"><input name="debit" type="checkbox" /> Débito</label>
+          <label class="switch"><input name="cash" type="checkbox" /> Dinheiro</label>
+          <label class="switch"><input name="vr" type="checkbox" /> Vale-refeição</label>
+        </div></div>
+        <div class="soft"><b>Horários</b><div class="form-grid" style="margin-top:10px">
+          <label class="field">Segunda<input name="mon" class="input" placeholder="18:00-23:00" /></label>
+          <label class="field">Terça<input name="tue" class="input" /></label>
+          <label class="field">Quarta<input name="wed" class="input" /></label>
+          <label class="field">Quinta<input name="thu" class="input" /></label>
+          <label class="field">Sexta<input name="fri" class="input" /></label>
+          <label class="field">Sábado<input name="sat" class="input" /></label>
+          <label class="field">Domingo<input name="sun" class="input" /></label>
+        </div></div>
+        <div class="row">
+          <label class="switch"><input name="open" type="checkbox" /> Loja aberta</label>
+          <label class="switch"><input name="verified" type="checkbox" /> Verificada</label>
+          <label class="switch"><input name="superStore" type="checkbox" /> Super loja</label>
+        </div>
+      </form>
+    </section>
+
+    <section class="admin-view" id="view-products">
+      <div class="grid cols-2">
+        <form id="productForm" class="card grid">
+          <div class="section-head"><div><h3>Produto</h3><p>Cadastre produto, adicionais e estoque.</p></div><button class="btn" type="submit">Salvar produto</button></div>
+          <input type="hidden" name="id" />
+          <div class="form-grid">
+            <label class="field">Nome<input name="name" class="input" required /></label>
+            <label class="field">Categoria<input name="category" class="input" required /></label>
+            <label class="field">Emoji/foto simples<input name="emoji" class="input" placeholder="🍔" /></label>
+            <label class="field">Preço<input name="price" class="input" type="number" step="0.01" required /></label>
+            <label class="field">Preço promocional<input name="promoPrice" class="input" type="number" step="0.01" /></label>
+            <label class="field">Estoque<input name="stock" class="input" type="number" /></label>
+            <label class="field">Serve<input name="serves" class="input" /></label>
+            <label class="field">Peso/tamanho<input name="weight" class="input" /></label>
+            <label class="field full">Descrição<input name="description" class="input" /></label>
+            <label class="field">Alérgenos<input name="allergens" class="input" /></label>
+            <label class="field">Nutrição<input name="nutrition" class="input" /></label>
+            <label class="field">Tempo preparo/min<input name="prepTime" class="input" type="number" /></label>
+            <input type="hidden" name="optionsRaw" />
+            <div class="field full easy-options-block">
+              <div class="easy-options-head">
+                <div>
+                  <b>Adicionais e opções do produto</b>
+                  <small>Monte os adicionais clicando nos botões. O restaurante não precisa digitar códigos.</small>
+                </div>
+                <button class="btn secondary sm" type="button" id="addOptionGroup">+ Grupo</button>
+              </div>
+              <div class="quick-template-row">
+                <button class="chip" type="button" data-option-template="burger">Modelo lanche</button>
+                <button class="chip" type="button" data-option-template="pizza">Modelo pizza</button>
+                <button class="chip" type="button" data-option-template="acai">Modelo açaí</button>
+                <button class="chip" type="button" data-option-template="drink">Modelo bebida</button>
+                <button class="chip soft-danger" type="button" id="clearOptionsBuilder">Limpar adicionais</button>
+              </div>
+              <div id="optionBuilder" class="option-builder"></div>
+              <div class="option-preview">
+                <span class="badge orange">Prévia no app</span>
+                <div id="optionPreview" class="option-preview-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row"><label class="switch"><input name="available" type="checkbox" checked /> Disponível</label><label class="switch"><input name="featured" type="checkbox" /> Destaque</label><button type="button" class="btn ghost sm" id="clearProduct">Limpar</button></div>
+        </form>
+        <div class="card"><div class="section-head"><div><h3>Cardápio atual</h3><p>Editar, pausar ou remover produtos.</p></div></div><div id="productsList" class="mini-list"></div></div>
+      </div>
+    </section>
+
+    <section class="admin-view" id="view-orders">
+      <div class="card"><div class="section-head"><div><h3>Pedidos recebidos</h3><p>Controle status e dados de entrega.</p></div></div><div class="table-wrap"><table class="table"><thead><tr><th>Pedido</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Status</th><th>Ação</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div>
+    </section>
+
+    <section class="admin-view" id="view-coupons">
+      <div class="grid cols-2">
+        <form id="couponForm" class="card grid">
+          <div class="section-head"><div><h3>Criar cupom da loja</h3><p>Por valor fixo, percentual ou frete grátis.</p></div><button class="btn" type="submit">Salvar cupom</button></div>
+          <div class="form-grid">
+            <label class="field">Código<input name="code" class="input" required /></label>
+            <label class="field">Tipo<select name="type" class="select"><option value="fixed">Valor fixo</option><option value="percent">Percentual</option><option value="delivery">Frete grátis</option></select></label>
+            <label class="field">Valor<input name="value" class="input" type="number" step="0.01" required /></label>
+            <label class="field">Pedido mínimo<input name="minOrder" class="input" type="number" step="0.01" /></label>
+            <label class="field">Validade<input name="expiresAt" class="input" type="date" /></label>
+            <label class="field">Limite uso<input name="usageLimit" class="input" type="number" /></label>
+          </div>
+          <label class="switch"><input name="active" type="checkbox" checked /> Ativo</label>
+        </form>
+        <div class="card"><h3 style="margin-top:0">Cupons da loja</h3><div id="couponsList" class="mini-list"></div></div>
+      </div>
+    </section>
+
+    <section class="admin-view" id="view-reviews">
+      <div class="grid cols-2">
+        <div class="card"><h3 style="margin-top:0">Avaliações</h3><div id="reviewsList" class="mini-list"></div></div>
+        <div class="card"><h3 style="margin-top:0">Chamados de suporte</h3><div id="supportList" class="mini-list"></div></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="restaurant-admin.js"></script>
+</body>
+</html>
